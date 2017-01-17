@@ -3,10 +3,16 @@ var path = require('path');
 var bodyParser = require('body-parser');
 
 var app = module.exports = express();
-app.use(express.static(__dirname + path.sep + '../public'));
 
+/**
+ * Definition de resources statiques dans le dossier public
+ */
+app.use(express.static(__dirname + path.sep + '../public'));
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
+/*
+* Modele
+*/
 var Annuaire = function() {
     this.collection = {};
 };
@@ -37,6 +43,8 @@ Annuaire.prototype.remove = function(key) {
     delete this.collection[key];
 };
 
+/* Controller */
+
 var global = new Annuaire();
 
 app.get('/', function(req, res){
@@ -49,6 +57,10 @@ app.get('/annuaire.js', function(req, res) {
 
 /* CRUD methodes */
 
+/**
+ * Retourne la entité de un link selon l'identificateur envoyé.
+ * 404 si l'identificateur ne correspond pas à aucun link
+ */
 app.get('/get/:id', function (req, res) {
     var link = global.get(req.params.id);
 
@@ -59,6 +71,9 @@ app.get('/get/:id', function (req, res) {
     }
 });
 
+/**
+ * Retourne tous les links de l'annuaire
+ */
 app.get('/all', function (req, res) {
     var collection = global.collection;
     var annuarie = [];
@@ -70,6 +85,9 @@ app.get('/all', function (req, res) {
     res.status(200).send(JSON.stringify(annuarie));
 });
 
+/**
+ * Cette méthode crée un nouveau link
+ */
 app.post('/', urlencodedParser, function (req, res) {
     var url = req.body.url;
     var nom = req.body.nom;
@@ -78,12 +96,16 @@ app.post('/', urlencodedParser, function (req, res) {
     res.status(201).send(JSON.stringify(global.get(nom)));
 });
 
+/**
+ * Cette méthode supprime un link
+ */
 app.delete('/:id', function (req, res) {
     global.remove(req.params.id);
     res.status(204).send();
 });
 
 /*
+Pour les test
 var server = app.listen(8081, function () {
     var host = server.address().address;
     var port = server.address().port;
