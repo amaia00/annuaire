@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Annuaire M1IF13</title>
+	</head>
+
+	<body>
+		<a href="client.html" >Côté Client</a>
+		<h1>Un simple annuaire de sites Web - Côte serveur</h1>
+
+
+		<div>
+			Nom : <input type="text" id="key" autofocus/>
+			URL : <input type="text" id="value"/>
+			<a href="#" id="addPair">Ajouter à l'annuaire</a>			
+		</div>
+		
+		<div id="pairs"></div>
+
+		<script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+		<script src="../annuaire.js"></script>
+		<script src="script.js"></script>
+		<script type="text/javascript">
+            $(function() {
+                Annuaire.getAll();
+
+                var removePair = function(event) {
+                    var key = event.target.attributes.getNamedItem("key").value;
+                    Annuaire.remove(key);
+                    showPairs();
+                };
+
+                $("#addPair").click(function() {
+                    var key = $("#key").val(),
+                        value = $("#value").val();
+                    Annuaire.bind(key, value);
+                });
+
+
+            });
+		</script>
+	</body>
+
+</html>
