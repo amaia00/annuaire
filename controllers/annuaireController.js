@@ -5,13 +5,13 @@ var bodyParser = require('body-parser');
 var app = module.exports = express();
 
 /**
- * Definition de resources statiques dans le dossier public
+ * Définition de resources statiques dans le dossier public
  */
 app.use(express.static(__dirname + path.sep + '../public'));
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 /*
-* Modele
+* Modèle
 */
 var Annuaire = function() {
     this.collection = {};
@@ -48,7 +48,7 @@ Annuaire.prototype.remove = function(key) {
 var global = new Annuaire();
 
 app.get('/', function(req, res){
-    res.sendFile(path.resolve('public/client.html'));
+    res.sendFile(path.resolve('public/index.html'));
 });
 
 app.get('/annuaire.js', function(req, res) {

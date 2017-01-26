@@ -1,41 +1,45 @@
 /**
  * Created by amaia.nazabal on 1/16/17.
  */
-var Annuaire = {
+var Interface = {
     /**
-     *
+     * Récupére tous les sites de l'annuaire
      */
     getAll: function () {
       jQuery.ajax({
           url: '/all',
-          method: 'GET'
-          /*,
+          method: 'GET',
           statusCode: {
-            404: function() {
-             alert( "page not found" );
+            500: function() {
+                jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
+                    'Serveur error </div>');
             }
           }
-          */
       }).done(function(data){
           var list = JSON.parse(data);
 
-          $('#pairs').html('');
+          $('#pairs-serveur > tbody').empty();
           list.forEach(function (key) {
 
-              jQuery("#pairs").append('<div id=' + key.nom + ' >' + key.nom + ' : ' + key.url +
-                  ' <a href="#" key="' + key.nom + '" class="pairRemove">(remove)</a></div>');
+              jQuery("#pairs-serveur > tbody").append('<tr><td>' + key.nom + '</td><td>' + key.url + ' </td><td>' +
+                  '<button type="button" class="btn btn-success btn-sm remove-serveur" onclick="removeURL(\'' + key.nom + '\')">' +
+                  '<icon class="glyphicon glyphicon-remove"></icon></button></td></tr>');
+
           });
 
-          jQuery(".pairRemove").click(Annuaire.delete);
+          jQuery("#key-serveur").focus();
 
       }).fail(function (error) {
-          console.log(error);
+          jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
+              'Serveur error </div>');
       });
     },
+
     /**
+     * Crée un nouveau site dans l'annuaire
      *
-     * @param key
-     * @param value
+     * @param key le nom du site
+     * @param value l'url du site
      */
     bind: function (key, value) {
         var params = {};
@@ -45,67 +49,68 @@ var Annuaire = {
         jQuery.ajax({
             url: '/',
             method: 'POST',
-            data: params
-            /*,
+            data: params,
              statusCode: {
-             404: function() {
-             alert( "page not found" );
+                 500: function() {
+                     jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
+                         'Serveur error </div>');
+                 }
              }
-             }
-             */
-        }).done(function(data){
-            //var link = JSON.parse(data);
-            //jQuery("#pairs").append('<div id=' + link.nom + ' >' + link.nom + ' : ' + link.url + ' <a href="#" key="' + link.nom + '" class="pairRemove">(remove)</a></div>');
-            Annuaire.getAll();
+        }).done(function(data) {
+            Interface.getAll();
+            jQuery("#key-serveur").val("").focus();
+            jQuery("#value-serveur").val("");
         }).fail(function (error) {
-            console.log(error);
+            jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
+                'Serveur error </div>');
         });
     },
 
     /**
      *
-     * @param key
+     * Supprime le site du nom
+     *
+     * @param key le nom du site
      */
-    delete: function () {
-        var key = event.target.attributes.getNamedItem("key").value;
-
+    delete: function (key) {
         jQuery.ajax({
             url: '/' + key,
-            method: 'DELETE'
-            /*,
+            method: 'DELETE',
              statusCode: {
-             404: function() {
-             alert( "page not found" );
+                 500: function() {
+                     jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
+                         'Serveur error </div>');
+                 }
              }
-             }
-             */
         }).done(function(data){
-            //console.log(data);
-            jQuery("#" + key).remove();
+            Interface.getAll();
         }).fail(function (error) {
-            console.log(error);
+            jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
+                'Serveur error </div>');
         });
     },
 
     /**
      *
-     * @param key
+     * Récupére un site selon le nom indiqué
+     *
+     * @param key le nom du site
      */
-    get: function (key) {i
+    get: function (key) {
         jQuery.ajax({
             url: '/get/' + key,
-            method: 'GET'
-            /*,
+            method: 'GET',
              statusCode: {
-             404: function() {
-             alert( "page not found" );
+                 500: function() {
+                     jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
+                         'Serveur error </div>');
+                 }
              }
-             }
-             */
         }).done(function(data){
             console.log(data);
         }).fail(function (error) {
-            console.log(error);
+            jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
+                'Serveur error </div>');
         });
     }
 };

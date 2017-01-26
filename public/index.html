@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<title>Annuaire M1IF13</title>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+			  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link href="style.css" rel="stylesheet">
+	</head>
+
+	<body>
+        <div class="container">
+            <h2>Un simple annuaire de sites Web</h2>
+            <hr>
+            <div class="error-section"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Côte Client</h4>
+                    Nom : <input type="text" id="key-client" autofocus/>
+                    URL : <input type="text" id="value-client"/>
+                    <button type="button" id="addPair" class="btn btn-primary btn-sm">
+                        <icon class="glyphicon glyphicon-ok"></icon>
+                    </button>
+                </div>
+
+                <div class="col-md-6">
+                    <h4>Côte Serveur</h4>
+                    Nom : <input type="text" id="key-serveur" autofocus/>
+                    URL : <input type="text" id="value-serveur"/>
+                    <button type="button" id="addPair-serveur" class="btn btn-success btn-sm">
+                        <icon class="glyphicon glyphicon-ok"></icon>
+                    </button>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <table id="pairs-client" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <td>Nom</td>
+                            <td>URL</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <table id="pairs-serveur" class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <td>Nom</td>
+                            <td>URL</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TODO: Install bootstrap avec npm -->
+		<script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>
+		<script src="../annuaire.js"></script>
+		<script src="client.js"></script>
+        <script src="serveur.js"></script>
+        <script src="script.js"></script>
+
+	</body>
+
+</html>
