@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
+var annuaire = require('../shared/annuaire.js');
 
 var app = module.exports = express();
 
@@ -10,49 +11,15 @@ var app = module.exports = express();
 app.use(express.static(__dirname + path.sep + '../public'));
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-/*
-* Modèle
-*/
-var Annuaire = function() {
-    this.collection = {};
-};
-
-Annuaire.prototype.get = function(key) {
-    var object = {};
-    var value = this.collection[key];
-
-    if (typeof value!= 'undefined') {
-        object.nom = key;
-        object.url = this.collection[key];
-    }
-
-    return object;
-};
-
-Annuaire.prototype.bind = function(key, value) {
-    try {
-        this.collection[key] = value;
-        return true;
-    } catch(e) {
-        console.trace(e);
-        return false;
-    }
-};
-
-Annuaire.prototype.remove = function(key) {
-    delete this.collection[key];
-};
-
 /* Controller */
 
-var global = new Annuaire();
 
 app.get('/', function(req, res){
     res.sendFile(path.resolve('public/index.html'));
 });
 
 app.get('/annuaire.js', function(req, res) {
-    res.sendFile(path.resolve('modele/annuaire.js'));
+    res.sendFile(path.resolve('shared/annuaire.js'));
 });
 
 /* CRUD methodes */
@@ -62,7 +29,7 @@ app.get('/annuaire.js', function(req, res) {
  * 404 si l'identificateur ne correspond pas à aucun link
  */
 app.get('/get/:id', function (req, res) {
-    var link = global.get(req.params.id);
+    var link = annuaire.get(req.params.id);
 
     if (!Object.keys(link).length) {
         res.status(404).send();
@@ -75,14 +42,14 @@ app.get('/get/:id', function (req, res) {
  * Retourne tous les links de l'annuaire
  */
 app.get('/all', function (req, res) {
-    var collection = global.collection;
-    var annuarie = [];
+    var all_bookmarks = annuaire.collection;
+    var collection = [];
 
-    for (var key in global.collection) {
-        annuarie.push({nom: key, url: collection[key]});
+    for (var key in all_bookmarks) {
+        collection.push({nom: key, url: all_bookmarks[key]});
     }
 
-    res.status(200).send(JSON.stringify(annuarie));
+    res.status(200).send(JSON.stringify(collection));
 });
 
 /**
@@ -92,17 +59,19 @@ app.post('/', urlencodedParser, function (req, res) {
     var url = req.body.url;
     var nom = req.body.nom;
 
-    global.bind(nom, url);
-    res.status(201).send(JSON.stringify(global.get(nom)));
+    annuaire.bind(nom, url);
+    res.status(201).send(JSON.stringify(annuaire.get(nom)));
 });
 
 /**
  * Cette méthode supprime un link
  */
 app.delete('/:id', function (req, res) {
-    global.remove(req.params.id);
+    annuaire.remove(req.params.id);
     res.status(204).send();
 });
+
+
 
 /*
 Pour les test

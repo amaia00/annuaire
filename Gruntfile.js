@@ -8,7 +8,7 @@ module.exports = function(grunt) {
 			}	
 		},
 		jshint: {
-			files: ['Gruntfile.js', 'controllers/annuaireController.js', 'modele/annuaire.js'],
+			files: ['Gruntfile.js', 'controllers/annuaireController.js', 'shared/annuaire.js'],
 			options: {
 				globals: {
 					jQuery: true
