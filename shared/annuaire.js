@@ -56,5 +56,8 @@ Annuaire.prototype.remove = function(key) {
 	delete this.collection[key];
 };
 
+try {
+    module.exports = new Annuaire();
+}catch (Exception){
 
-module.exports = new Annuaire();
+}
