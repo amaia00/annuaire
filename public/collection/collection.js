@@ -19,6 +19,6 @@ var app = app || {};
         comparator: 'title'
     });
 
-    app.Collection = new Colection();
+    app.Collection = new Collection();
 
 })();

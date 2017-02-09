@@ -9,10 +9,15 @@ var app = app || {};
 (function () {
     'use strict';
 
-    var Model = Backbone.Model.extend({
+    app.Model = Backbone.Model.extend({
         defaults: {
             title: '',
-            url: '',
+            url: ''
+        }
+    });
+
+    app.Categorie = Backbone.Mode.extend({
+        defaults: {
             categorie: ''
         }
     });

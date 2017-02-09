@@ -16,8 +16,8 @@
     <hr>
     <section id="routage">
         <ul class="nav nav-tabs">
-            <li class="nav active"> <a id="server-view" href="#/server" data-target="#server">Côte Serveur </a> </li>
-            <li class="nav"> <a id="client-view" href="#/client" data-target="#server">Côte Client </a> </li>
+            <li class="nav active"><a id="server-view" href="#/server" data-target="#server">Côte Serveur </a></li>
+            <li class="nav"><a id="client-view" href="#/client" data-target="#client">Côte Client </a></li>
         </ul>
     </section>
 
@@ -25,69 +25,72 @@
     <div class="error-section"></div>
 
     <section class="content-server">
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Côte Serveur</h4>
-            Nom : <input type="text" id="key-serveur" autofocus/>
-            URL : <input type="text" id="value-serveur"/>
-            <button type="button" id="addPair-serveur" class="btn btn-success btn-sm">
-                <icon class="glyphicon glyphicon-ok"></icon>
-            </button>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Côte Serveur</h4>
+                Nom : <input type="text" id="key-serveur" autofocus/>
+                URL : <input type="text" id="value-serveur"/>
+                <button type="button" id="addPair-serveur" class="btn btn-success btn-sm">
+                    <icon class="glyphicon glyphicon-ok"></icon>
+                </button>
+            </div>
         </div>
-
-        <div class="col-md-12">
-            <table id="pairs-serveur" class="table table-bordered">
-                <thead>
-                <tr>
-                    <td>Nom</td>
-                    <td>URL</td>
-                    <td></td>
-                </tr>
-                </thead>
-                <tbody id="table-body-server">
-                <script type="text/template" id="server-template">
-                    <td><%= site %></td>
-                    <td><%= url %></td>
-                    <td></td>
-                </script>
-                </tbody>
-            </table>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="pairs-serveur" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>Nom</td>
+                        <td>URL</td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
     </section>
 
     <section class="content-client" style="display: none;">
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Côte Client</h4>
-            Nom : <input type="text" id="key-client" autofocus/>
-            URL : <input type="text" id="value-client"/>
-            <button type="button" id="addPair" class="btn btn-primary btn-sm add-site">
-                <icon class="glyphicon glyphicon-ok"></icon>
-            </button>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Côte Client</h4>
+                Nom : <input type="text" id="key-client" autofocus/>
+                URL : <input type="text" id="value-client"/>
+                <button type="button" id="addPair" class="btn btn-primary btn-sm add-site">
+                    <icon class="glyphicon glyphicon-ok"></icon>
+                </button>
+            </div>
         </div>
-
-        <div class="col-md-12">
-            <table id="pairs-client" class="table table-bordered">
-                <thead>
-                <tr>
-                    <td>Nom</td>
-                    <td>URL</td>
-                    <td></td>
-                </tr>
-                </thead>
-                <tbody id="table-body-client">
-                <script type="text/template" id="client-template">
-                    <td><%= site %></td>
-                    <td><%= url %></td>
-                    <td></td>
-                </script>
-                </tbody>
-            </table>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="pairs-client" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>Nom</td>
+                        <td>URL</td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody id="table-body-client">
+                    <script type="text/template" id="client-template">
+                        <tr>
+                            <td><%= title %></td>
+                            <td><%= url %></td>
+                            <td>
+                                <button type="button" data-title="<%= title%>" data-url="<%= url%>"
+                                        class="btn btn-success btn-sm remove-site">
+                                    <icon class="glyphicon glyphicon-remove"></icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </script>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-
-
+    </section>
 </div>
 
 
@@ -99,45 +102,13 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <script src="../annuaire.js"></script>
-<script src="client.js"></script>
+<!--<script src="client.js"></script>-->
 <script src="serveur.js"></script>
 <script src="script.js"></script>
+<script src="model/modele.js"></script>
+<script src="collection/collection.js"></script>
 <script src="view/views.js"></script>
-<script>
-    var app = app || {};
-
-    (function () {
-        'use strict';
-
-        var AppRouter = Backbone.Router.extend({
-            routes: {
-                '' : 'server',
-                'server' : 'server', //par défaut le côté serveur
-                'client' : 'client'
-            },
-
-            server: function () {
-                this.loadView(new app.ServerView());
-            },
-
-            client: function () {
-                this.loadView(new app.ClientView());
-            },
-
-            loadView : function(view) {
-                this.view && this.view.hide();
-                this.view = view;
-            }
-        });
-
-        var appRouter = new AppRouter();
-
-        /**
-         * On active l'option pour la gestion de l'historial du navigateur
-         */
-        Backbone.history.start();
-    })();
-</script>
+<script src="router/router.js"></script>
 </body>
 
 </html>
