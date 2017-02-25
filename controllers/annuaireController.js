@@ -46,7 +46,8 @@ app.get('/all', function (req, res) {
     var collection = [];
 
     for (var key in all_bookmarks) {
-        collection.push({nom: key, url: all_bookmarks[key]});
+        if (all_bookmarks.hasOwnProperty(key))
+            collection.push({nom: key, url: all_bookmarks[key]});
     }
 
     res.status(200).send(JSON.stringify(collection));

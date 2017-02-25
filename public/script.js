@@ -10,9 +10,9 @@ var Interface = {
           url: '/all',
           method: 'GET',
           statusCode: {
-            500: function() {
+            500: function(error) {
                 jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
-                    'Serveur error </div>');
+                    'Serveur error: ' + error + '</div>');
             }
           }
       }).done(function(data){
@@ -31,7 +31,7 @@ var Interface = {
 
       }).fail(function (error) {
           jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
-              'Serveur error </div>');
+              'Serveur error: ' + error + '</div>');
       });
     },
 
@@ -56,13 +56,13 @@ var Interface = {
                          'Serveur error </div>');
                  }
              }
-        }).done(function(data) {
+        }).done(function() {
             Interface.getAll();
             jQuery("#key-serveur").val("").focus();
             jQuery("#value-serveur").val("");
         }).fail(function (error) {
             jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
-                'Serveur error </div>');
+                'Serveur error: ' + error + '</div>');
         });
     },
 
@@ -82,11 +82,11 @@ var Interface = {
                          'Serveur error </div>');
                  }
              }
-        }).done(function(data){
+        }).done(function(){
             Interface.getAll();
         }).fail(function (error) {
             jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
-                'Serveur error </div>');
+                'Serveur error: '+ error + ' </div>');
         });
     },
 
@@ -110,7 +110,7 @@ var Interface = {
             console.log(data);
         }).fail(function (error) {
             jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
-                'Serveur error </div>');
+                'Serveur error: ' + error + ' </div>');
         });
     }
 };

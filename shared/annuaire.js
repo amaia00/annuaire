@@ -24,7 +24,7 @@ var Annuaire = function() {
  * @returns {*|string} l'url du site
  */
 Annuaire.prototype.get = function(key) {
-	return this.collection.key;
+	return this.collection[key];
 };
 
 /**

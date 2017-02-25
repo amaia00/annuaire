@@ -16,7 +16,7 @@ var app = app || {};
         }
     });
 
-    app.Categorie = Backbone.Mode.extend({
+    app.Categorie = Backbone.Model.extend({
         defaults: {
             categorie: ''
         }
