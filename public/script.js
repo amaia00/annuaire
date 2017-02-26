@@ -114,3 +114,21 @@ var Interface = {
         });
     }
 };
+/*
+jQuery(document).ready(function(){
+    jQuery('#pairs-serveur').DataTable();
+});*/
+
+jQuery(document).ready(function ()
+{
+$(window).load(function (){
+    var pathname =window.location.href;
+    expr = "client";
+
+    if(pathname.match(expr)!=null){
+        $(".content-server").css("display","none");
+
+    }
+
+});
+});
