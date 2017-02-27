@@ -21,13 +21,16 @@ var Interface = {
           $('#pairs-serveur > tbody').empty();
           list.forEach(function (key) {
 
-              jQuery("#pairs-serveur > tbody").append('<tr><td>' + key.nom + '</td><td>' + key.url + ' </td><td>' +
-                  '<button type="button" class="btn btn-success btn-sm remove-serveur" onclick="removeURL(\'' + key.nom + '\')">' +
-                  '<icon class="glyphicon glyphicon-remove"></icon></button></td></tr>');
+              jQuery("#pairs-serveur > tbody").append('<tr><td>' + key.nom + '</td><td>' + key.url + ' </td><td class="delete_btn">' +
+                  '<button type="button" class="btn btn-danger btn-sm remove-serveur" onclick="removeURL(\'' + key.nom + '\')">' +
+                  '<icon class="glyphicon glyphicon-remove"></icon>supprimer</button></td></tr>');
+              var height_body_site= jQuery(".body_site .container").height();
+              $(".body_site").css("height",height_body_site+"px");
 
           });
 
           jQuery("#key-serveur").focus();
+          $('#myModal').modal('hide');
 
       }).fail(function (error) {
           jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
@@ -119,16 +122,3 @@ jQuery(document).ready(function(){
     jQuery('#pairs-serveur').DataTable();
 });*/
 
-jQuery(document).ready(function ()
-{
-$(window).load(function (){
-    var pathname =window.location.href;
-    expr = "client";
-
-    if(pathname.match(expr)!=null){
-        $(".content-server").css("display","none");
-
-    }
-
-});
-});

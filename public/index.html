@@ -5,93 +5,174 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="style.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet"/>
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="bootstrap-tagsinput.css" rel="stylesheet" />
+    <link href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet">
 </head>
 
 <body>
-<div class="container">
+    <div class="container">
+        <div class="header">
+            <img src="images/image_annuaire.png" alt="image annuaire" />
+            <h2>Un simple annuaire de sites Web</h2>
 
-
-    <h2>Un simple annuaire de sites Web</h2>
-    <hr>
-    <section id="routage">
-        <ul class="nav nav-tabs">
-            <li class="nav active"><a id="server-view" href="#/server" data-target="#server">Côte Serveur </a></li>
-            <li class="nav"><a id="client-view" href="#/client" data-target="#client">Côte Client </a></li>
-        </ul>
-    </section>
-
-
-    <div class="error-section"></div>
-
-    <section class="content-server">
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Côte Serveur</h4>
-                Nom : <input type="text" id="key-serveur" autofocus/>
-                URL : <input type="text" id="value-serveur"/>
-                <button type="button" id="addPair-serveur" class="btn btn-success btn-sm">
-                    <icon class="glyphicon glyphicon-ok"></icon>
-                </button>
-            </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table id="pairs-serveur" class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <td>Nom</td>
-                        <td>URL</td>
-                        <td></td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
+    </div>
+    <div class="menu">
+        <div class="container">
+            <section id="routage">
+                <ul class="nav nav-tabs">
+                    <li class="nav active"><a id="server-view" href="#/server" data-target="#server"><i class="fa fa-server" aria-hidden="true"></i>Côte Serveur </a></li>
+                    <li class="nav"><a id="client-view" href="#/client" data-target="#client"><i class="fa fa-desktop" aria-hidden="true"></i>Côte Client </a></li>
+                </ul>
+            </section>
         </div>
-    </section>
+    </div>
+    <div class="body_site">
+        <div class="container">
+            <div class="error-section"></div>
 
-    <section class="content-client" style="display: none;">
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Côte Client</h4>
-                Nom : <input type="text" id="key-client" autofocus/>
-                URL : <input type="text" id="value-client"/>
-                <button type="button" id="addPair" class="btn btn-primary btn-sm add-site">
-                    <icon class="glyphicon glyphicon-ok"></icon>
-                </button>
-            </div>
+            <section class="content-server">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Cliquer sur le bouton pour ajouter un site web à l'annuaire : coté serveur</h4>
+
+                            <button type="button" class="btn plus_btn" data-toggle="modal" data-target="#myModal">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="pairs-serveur"  class="table table-striped table-bordered">
+                            <thead>
+                            <tr>
+                                <td>Nom</td>
+                                <td>URL</td>
+                                <td></td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-client" style="display: none;">
+                <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel1">Formulaire coté client </h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group">
+                                    <label class="for_labels"> Nom : </label>
+                                    <span class="input-group-addon" id="basic-addon4">@</span>
+                                    <input type="text" id="key-client" autofocus class="form-control" placeholder="Entrer le nom" aria-describedby="basic-addon4"/><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label class="for_labels"> URL : </label>
+                                    <span class="input-group-addon" id="basic-addon5"><i class="fa fa-link" aria-hidden="true"></i></span>
+                                    <input type="text" id="value-client" class="form-control" placeholder="Entrer l'URL" aria-describedby="basic-addon5"/><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label class="for_labels"> Tags : </label>
+                                    <span class="input-group-addon" id="basic-addon6"><i class="fa fa-tags" aria-hidden="true"></i></span>
+                                    <input type="text" id="tags_client" placeholder="Entrer des tags en les séparant par un clique sur entrer" data-role="tagsinput" class="form-control" aria-describedby="basic-addon6" />
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+                                    <button type="button" id="addPair" class="btn btn-success btn-sm add-site">
+                                        <icon class="glyphicon glyphicon-ok"></icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Cliquer sur le bouton pour ajouter un site web à l'annuaire : coté client</h4>
+                        <button type="button" class="btn plus_btn" data-toggle="modal" data-target="#myModal1">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="pairs-client" class="table table-striped table-bordered">
+                            <thead>
+                            <tr>
+                                <td>Nom</td>
+                                <td>URL</td>
+                                <td></td>
+                            </tr>
+                            </thead>
+                            <tbody id="table-body-client">
+                            <script type="text/template" id="client-template">
+                                <tr>
+                                    <td><%= title %></td>
+                                    <td><%= url %></td>
+                                    <td class="delete_btn">
+                                        <button type="button" data-title="<%= title%>" data-url="<%= url%>"
+                                                class="btn btn-danger btn-sm remove-site">
+                                            <icon class="glyphicon glyphicon-remove"></icon> supprimer
+                                        </button>
+                                    </td>
+                                </tr>
+                            </script>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        </section>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table id="pairs-client" class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <td>Nom</td>
-                        <td>URL</td>
-                        <td></td>
-                    </tr>
-                    </thead>
-                    <tbody id="table-body-client">
-                    <script type="text/template" id="client-template">
-                        <tr>
-                            <td><%= title %></td>
-                            <td><%= url %></td>
-                            <td>
-                                <button type="button" data-title="<%= title%>" data-url="<%= url%>"
-                                        class="btn btn-success btn-sm remove-site">
-                                    <icon class="glyphicon glyphicon-remove"></icon>
-                                </button>
-                            </td>
-                        </tr>
-                    </script>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
 </div>
+<!-- Modals-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Formulaire  coté serveur</h4>
+                </div>
+                <div class="modal-body">
+
+
+
+                <div class="input-group">
+                   <label class="for_labels"> Nom : </label>
+                    <span class="input-group-addon" id="basic-addon1">@</span>
+                     <input type="text" id="key-serveur" autofocus class="form-control" placeholder="Entrer le nom" aria-describedby="basic-addon1"/><br/>
+                </div>
+                <div class="input-group">
+                    <label class="for_labels"> URL : </label>
+                    <span class="input-group-addon" id="basic-addon2"><i class="fa fa-link" aria-hidden="true"></i></span>
+                    <input type="text" id="value-serveur" class="form-control" placeholder="Entrer l'URL" aria-describedby="basic-addon2"/><br/>
+                </div>
+                <div class="input-group">
+                    <label class="for_labels"> Tags : </label>
+                    <span class="input-group-addon" id="basic-addon3"><i class="fa fa-tags" aria-hidden="true"></i></span>
+                    <input type="text" placeholder="Entrer des tags en les séparant par un clique sur entrer" data-role="tagsinput" class="form-control" aria-describedby="basic-addon3" />
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i></button>
+                    <button type="button" id="addPair-serveur" class="btn btn-success btn-sm">
+                        <icon class="glyphicon glyphicon-ok"></icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 
 <!-- TODO: Install bootstrap avec npm -->
 <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -107,6 +188,9 @@
 <script src="collection/collection.js"></script>
 <script src="view/views.js"></script>
 <script src="router/router.js"></script>
+<script src="bootstrap-tagsinput.min.js"></script>
+
+
 </body>
 
 </html>

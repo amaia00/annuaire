@@ -21,6 +21,8 @@ function removeURL (key) {
 jQuery("#addPair-serveur").click(function() {
     var key = jQuery("#key-serveur").val(),
         value = jQuery("#value-serveur").val();
+    if(key !="" || value !="" ) {
 
-    Interface.bind(key, value);
+        Interface.bind(key, value);
+    }
 });

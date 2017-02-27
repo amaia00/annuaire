@@ -38,11 +38,14 @@ var app = app || {};
         },
 
         addSite: function () {
-            app.Collection.add({title: $('#key-client').val(), url: $('#value-client').val()});
-            $('#key-client').val('');
-            $('#value-client').val('');
+            if( $('#key-client').val() !="" || $('#value-client').val() !="" ) {
+                app.Collection.add({title: $('#key-client').val(), url: $('#value-client').val()});
+                $('#key-client').val('');
+                $('#value-client').val('');
+                $('#myModal1').modal('hide');
 
-            this.show();
+                this.show();
+            }
         },
         
         removeSite: function (ev) {
@@ -101,3 +104,17 @@ var app = app || {};
     });
 
 })(jQuery);
+
+jQuery(document).ready(function ()
+{
+    $(window).load(function (){
+        var pathname =window.location.href;
+        expr = "client";
+
+        if(pathname.match(expr)!=null){
+            $(".content-server").css("display","none");
+
+        }
+
+    });
+});
