@@ -11,6 +11,9 @@
     <link href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet">
 </head>
 
+<!-- TODO: -->
+<!-- We have to add the check for the empty's inputs when we want to add a site -->
+
 <body>
 <div class="container">
     <div class="header">
@@ -78,35 +81,38 @@
                             <h4 class="modal-title" id="myModalLabel1">Formulaire coté client </h4>
                         </div>
                         <div class="modal-body">
-                            <div class="input-group">
-                                <label class="for_labels"> Nom : </label>
-                                <span class="input-group-addon" id="basic-addon4">@</span>
-                                <input type="text" id="key-client" autofocus class="form-control"
-                                       placeholder="Entrer le nom" aria-describedby="basic-addon4"/><br/>
-                            </div>
-                            <div class="input-group">
-                                <label class="for_labels"> URL : </label>
-                                <span class="input-group-addon" id="basic-addon5"><i class="fa fa-link"
-                                                                                     aria-hidden="true"></i></span>
-                                <input type="text" id="value-client" class="form-control" placeholder="Entrer l'URL"
-                                       aria-describedby="basic-addon5"/><br/>
-                            </div>
-                            <div class="input-group">
-                                <label class="for_labels"> Tags : </label>
-                                <span class="input-group-addon" id="basic-addon6"><i class="fa fa-tags"
-                                                                                     aria-hidden="true"></i></span>
-                                <input type="text" id="tags-client"
-                                       placeholder="Entrer des tags en les séparant par un clique sur entrer"
-                                       data-role="tagsinput" class="form-control" aria-describedby="basic-addon6"/>
+                            <form id="form-client">
+                                <div class="input-group">
+                                    <label class="for_labels"> Nom : </label>
+                                    <span class="input-group-addon" id="basic-addon4">@</span>
+                                    <input type="text" id="key-client" autofocus class="form-control"
+                                           placeholder="Entrer le nom" value="<%= title%>"
+                                           aria-describedby="basic-addon4"/><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label class="for_labels"> URL : </label>
+                                    <span class="input-group-addon" id="basic-addon5"><i class="fa fa-link"
+                                                                                         aria-hidden="true"></i></span>
+                                    <input type="text" id="value-client" class="form-control" placeholder="Entrer l'URL"
+                                           aria-describedby="basic-addon5" value="<%= url%>"/><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label class="for_labels"> Tags : </label>
+                                    <span class="input-group-addon" id="basic-addon6"><i class="fa fa-tags"
+                                                                                         aria-hidden="true"></i></span>
+                                    <input type="text" id="tags-client" value="<%= tags%>"
+                                           placeholder="Entrer des tags en les séparant par un clique sur entrer"
+                                           data-role="tagsinput" class="form-control" aria-describedby="basic-addon6"/>
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i
-                                        class="fa fa-times" aria-hidden="true"></i></button>
-                                <button type="button" id="addPair" class="btn btn-success btn-sm add-site">
-                                    <icon class="glyphicon glyphicon-ok"></icon>
-                                </button>
-                            </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i
+                                            class="fa fa-times" aria-hidden="true"></i></button>
+                                    <button type="button" id="addPair" class="btn btn-success btn-sm add-site">
+                                        <icon class="glyphicon glyphicon-ok"></icon>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -117,7 +117,7 @@ var Interface = {
                 }
             }
         }).done(function (data) {
-            console.log(data);
+            console.log("Server get", data);
         }).fail(function (error) {
             jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
                 'Serveur error: ' + error + ' </div>');

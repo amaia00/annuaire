@@ -10,13 +10,42 @@ var app = app || {};
     /**
      *
      */
+    var FormClient = Backbone.View.extend({
+        initialize: function (e) {
+            this.render(e)
+        },
+
+        render: function () {
+
+            app.Collection.add({
+                title: this.$el.find('input[id="key-client"]').val(),
+                url: this.$el.find('input[id="value-client"]').val(),
+                tags: this.$el.find('input[id="tags-client"]').val()
+            });
+
+            $('#myModal1').modal('hide');
+
+            this.clean();
+        },
+
+        clean: function () {
+            this.$el.find('input[id="key-client"]').val('');
+            this.$el.find('input[id="value-client"]').val('');
+            this.$el.find('input[id="tags-client"]').tagsinput('removeAll');
+
+        }
+    });
+
+    /**
+     *
+     */
     app.ClientView = Backbone.View.extend({
         el: '.content-client',
 
         template: 'client-template',
 
         events: {
-            'click .add-site': 'addSite',
+            'click #form-client .add-site': 'addSite',
             'click .remove-site': 'removeSite'
         },
 
@@ -34,31 +63,15 @@ var app = app || {};
 
         show: function () {
             this.$el.css('display', 'block');
-            var view = new app.ClientViewList();
+            var view = new app.ClientViewList({collection: app.Collection});
         },
 
-        addSite: function () {
-            if( $('#key-client').val() !="" || $('#value-client').val() !="" ) {
+        addSite: function (e) {
+            var site = new FormClient({el: $('#form-client')});
+            this.show();
 
-                console.log( $("#tags-client").val());
-
-                app.Collection.add({
-                    title: $('#key-client').val(),
-                    url: $('#value-client').val(),
-                    tags: $("#tags-client").val()
-                });
-
-                $('#key-client').val('');
-                $('#value-client').val('');
-                $('#tags-client').tagsinput('removeAll');
-                $('#tags-client').val('');
-
-                $('#myModal1').modal('hide');
-
-                this.show();
-            }
         },
-        
+
         removeSite: function (ev) {
             var title = $(ev.currentTarget).attr('data-title');
             var url = $(ev.currentTarget).attr('data-url');
@@ -79,10 +92,12 @@ var app = app || {};
 
         tagName: 'tr',
 
-        initialize: function() {
+        initialize: function () {
+            _.bindAll(this, "render");
+            this.listenTo(this.collection, 'add remove', this.render);
             this.render();
         },
-        
+
         render: function () {
             this.$el.empty();
 
@@ -90,7 +105,6 @@ var app = app || {};
                 this.$el.append(this.template(model.toJSON()));
             }, this);
         }
-
     });
 
     /**
@@ -116,14 +130,13 @@ var app = app || {};
 
 })(jQuery);
 
-jQuery(document).ready(function ()
-{
-    $(window).load(function (){
-        var pathname =window.location.href;
+jQuery(document).ready(function () {
+    $(window).load(function () {
+        var pathname = window.location.href;
         var expr = "client";
 
-        if(pathname.match(expr)!=null){
-            $(".content-server").css("display","none");
+        if (pathname.match(expr) != null) {
+            $(".content-server").css("display", "none");
 
         }
 

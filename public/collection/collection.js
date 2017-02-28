@@ -20,5 +20,4 @@ var app = app || {};
     });
 
     app.Collection = new Collection();
-
 })();

@@ -54,6 +54,6 @@ Tag.prototype.print = function () {
  */
 try {
     module.exports = Tag;
-}catch (Exception){
-    console.log("")
+}catch (e){
+    console.log("Exception: ", e)
 }
