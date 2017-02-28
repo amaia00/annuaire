@@ -10,7 +10,8 @@ var app = app || {};
         routes: {
             '': 'server',
             'server': 'server', //par défaut le côté serveur
-            'client': 'client'
+            'client': 'client',
+            'tag/:tag' : 'tag'
         },
 
         server: function () {
@@ -31,7 +32,7 @@ var app = app || {};
         }
     });
 
-    var appRouter = new AppRouter();
+    new AppRouter();
 
     /**
      * On active l'option pour la gestion de l'historial du navigateur
