@@ -2,9 +2,14 @@
  * Created by amaia.nazabal on 1/26/17.
  * Script pour le formulaire du côté client
  *
+ * ON N'UTILISE PAS DÉJÀ!!!!!!
  */
+
+'use strict';
 jQuery(function() {
     var annuaire  = new Annuaire();
+
+    var removePair;
 
     /**
      * Montre tous les sites de l'annuaire
@@ -28,7 +33,7 @@ jQuery(function() {
      *
      * @param event click
      */
-    var removePair = function(event) {
+    removePair = function(event) {
         var key = event.target.attributes.getNamedItem("key").value;
         annuaire.remove(key);
         showPairs();

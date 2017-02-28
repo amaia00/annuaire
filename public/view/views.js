@@ -39,9 +39,20 @@ var app = app || {};
 
         addSite: function () {
             if( $('#key-client').val() !="" || $('#value-client').val() !="" ) {
-                app.Collection.add({title: $('#key-client').val(), url: $('#value-client').val()});
+
+                console.log( $("#tags-client").val());
+
+                app.Collection.add({
+                    title: $('#key-client').val(),
+                    url: $('#value-client').val(),
+                    tags: $("#tags-client").val()
+                });
+
                 $('#key-client').val('');
                 $('#value-client').val('');
+                $('#tags-client').tagsinput('removeAll');
+                $('#tags-client').val('');
+
                 $('#myModal1').modal('hide');
 
                 this.show();
@@ -109,7 +120,7 @@ jQuery(document).ready(function ()
 {
     $(window).load(function (){
         var pathname =window.location.href;
-        expr = "client";
+        var expr = "client";
 
         if(pathname.match(expr)!=null){
             $(".content-server").css("display","none");

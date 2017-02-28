@@ -12,7 +12,8 @@ var app = app || {};
     app.Model = Backbone.Model.extend({
         defaults: {
             title: '',
-            url: ''
+            url: '',
+            tags: ''
         }
     });
 

@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
+var Tag = require('../shared/tag.js');
 var annuaire = require('../shared/annuaire.js');
 
 var app = module.exports = express();
@@ -22,6 +23,10 @@ app.get('/annuaire.js', function(req, res) {
     res.sendFile(path.resolve('shared/annuaire.js'));
 });
 
+app.get('/tag.js', function(req, res) {
+    res.sendFile(path.resolve('shared/tag.js'));
+});
+
 /* CRUD methodes */
 
 /**
@@ -29,12 +34,12 @@ app.get('/annuaire.js', function(req, res) {
  * 404 si l'identificateur ne correspond pas à aucun link
  */
 app.get('/get/:id', function (req, res) {
-    var link = annuaire.get(req.params.id);
+    var site = annuaire.get(req.params.id);
 
     if (!Object.keys(link).length) {
         res.status(404).send();
     } else {
-        res.status(200).send(JSON.stringify(link));
+        res.status(200).send(JSON.stringify(site));
     }
 });
 
@@ -57,11 +62,21 @@ app.get('/all', function (req, res) {
  * Cette méthode crée un nouveau link
  */
 app.post('/', urlencodedParser, function (req, res) {
-    var url = req.body.url;
-    var nom = req.body.nom;
+    try {
+        var url = req.body.url;
+        var nom = req.body.nom;
+        var tags = req.body.tag;
 
-    annuaire.bind(nom, url);
-    res.status(201).send(JSON.stringify(annuaire.get(nom)));
+        var tag = new Tag();
+        tags.split(',').forEach(function (e) {
+            tag.add(e);
+        });
+
+        annuaire.bind(nom, url, tag);
+        res.status(201).send(JSON.stringify(annuaire.get(nom)));
+    }catch (e){
+        res.status(500).send(e.message);
+    }
 });
 
 /**

@@ -1,6 +1,9 @@
 /**
  * Created by amaia.nazabal on 1/26/17.
  */
+
+'use strict';
+
 jQuery(function() {
     Interface.getAll();
 
@@ -20,9 +23,11 @@ function removeURL (key) {
  */
 jQuery("#addPair-serveur").click(function() {
     var key = jQuery("#key-serveur").val(),
-        value = jQuery("#value-serveur").val();
+        value = jQuery("#value-serveur").val(),
+        tags = jQuery("#tags_serveur").val();
+
     if(key !="" || value !="" ) {
 
-        Interface.bind(key, value);
+        Interface.bind(key, value, tags);
     }
 });

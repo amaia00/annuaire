@@ -58,8 +58,7 @@
     border: 0;
 }
 .body_site {
-    background: url('images/back_app.jpg');
-    background-repeat: no-repeat;
+    background: url('../images/back_app.jpg') no-repeat;
     background-size: cover;
     margin-top:-10px;
     min-height: 470px;

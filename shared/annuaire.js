@@ -1,3 +1,5 @@
+
+
 /**
  * Cette méthode récupére la valeur de la chaîne
  *
@@ -33,16 +35,26 @@ Annuaire.prototype.get = function(key) {
  *
  * @param key le nom du site
  * @param value l'url du site
+ * @param tags la liste de tags associés au site
  * @returns {boolean} retourne si l'objet a été ajouté dans la collection
  */
-Annuaire.prototype.bind = function(key, value) {
-	try {  
+Annuaire.prototype.bind = function(key, value, tags) {
+	try {
+		/* Si le paramètre tags n'a pas été envoyé on le declare comme un array. */
+		tags = tags || [];
+
+
 		key = escapeHtml(key);
 		value = escapeHtml(value);
-		this.collection[key] = value;
+
+		this.collection[key] = {value: "", tags: ""};
+		this.collection[key].value = value;
+		this.collection[key].tags = tags;
 
 		return true;
+
 	} catch(e) {
+	    console.log(e);
 		return false;
 	}
 };

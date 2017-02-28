@@ -2,13 +2,12 @@
  * Created by amaia.nazabal on 2/9/17.
  */
 
-
 /**
  * Constructeur des categories
  * @constructor
  */
-var Tag = function () {
-    this.collection = {};
+function Tag () {
+    this.collection = [];
 };
 
 /**
@@ -35,7 +34,7 @@ Tag.prototype.add = function (data) {
  * @returns {boolean}
  */
 Tag.prototype.exists = function (data) {
-    return typeof this.collection[data] != 'undefined';
+    return typeof this.collection[data] !== 'undefined';
 };
 
 /**
@@ -46,12 +45,15 @@ Tag.prototype.delete = function (data) {
     delete this.collection[data];
 };
 
+Tag.prototype.print = function () {
+  return this.collection.join(',');
+};
 
 /**
  *
  */
 try {
-    module.exports = new Tag();
+    module.exports = Tag;
 }catch (Exception){
     console.log("")
 }
