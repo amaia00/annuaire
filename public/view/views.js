@@ -1,7 +1,6 @@
 /**
  * Created by amaia.nazabal on 2/9/17.
- * TODO:
- * Try to remake the view generics
+ * TODO: try to remake the view generics
  **/
 
 var app = app || {};
@@ -14,15 +13,18 @@ var app = app || {};
      */
     var FormClient = Backbone.View.extend({
         initialize: function (e) {
+            this.title = $('#key-client');
+            this.url = $('#value-client');
+            this.tags = $('#tags-client');
             this.render(e)
         },
 
         render: function () {
 
             app.ClientCollection.add({
-                title: this.$el.find('input[id="key-client"]').val(),
-                url: this.$el.find('input[id="value-client"]').val(),
-                tags: this.$el.find('input[id="tags-client"]').val()
+                title: this.title.val(),
+                url: this.url.val(),
+                tags: this.tags.val()
             });
 
             $('#myModal1').modal('hide');
@@ -30,9 +32,9 @@ var app = app || {};
         },
 
         clean: function () {
-            this.$el.find('input[id="key-client"]').val('');
-            this.$el.find('input[id="value-client"]').val('');
-            this.$el.find('input[id="tags-client"]').tagsinput('removeAll');
+            this.title.val('');
+            this.url.val('');
+            this.tags.tagsinput('removeAll');
 
         }
     });
@@ -66,7 +68,6 @@ var app = app || {};
         addSite: function () {
             new FormClient({el: $('#form-client')});
             this.show();
-
         },
 
         removeSite: function (ev) {
@@ -106,22 +107,19 @@ var app = app || {};
     });
 
 
-    /* Server side views' */
-
+    /* Server side views */
     var FormServer = Backbone.View.extend({
         initialize: function (e) {
             this.render(e)
         },
 
         render: function () {
-
             app.ServerCollection.create({
                 title: this.$el.find('input[id="key-serveur"]').val(),
                 url: this.$el.find('input[id="value-serveur"]').val(),
                 tags: this.$el.find('input[id="tags-serveur"]').val()
             }, {url: '/bookmarks/', method: 'POST', emulateJSON: true});
 
-            $('#myModal').modal('hide');
             $('#myModal').modal('hide');
             this.clean();
         },
