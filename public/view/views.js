@@ -236,10 +236,17 @@ var app = app || {};
 jQuery(document).ready(function () {
     $(window).load(function () {
         var pathname = window.location.href;
-        var expr = "client";
+        var client = "client";
+        var tags ="tag";
 
-        if (pathname.match(expr) != null) {
+        if (pathname.match(client) != null) {
             $(".content-server").css("display", "none");
+            $(".tag-server").css("display", "none");
+
+        }
+        else if(pathname.match(tags) != null) {
+            $(".content-server").css("display", "none");
+            $(".client-server").css("display", "none");
 
         }
 
