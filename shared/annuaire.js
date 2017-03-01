@@ -71,5 +71,5 @@ Annuaire.prototype.remove = function(key) {
 try {
     module.exports = new Annuaire();
 }catch (e){
-    console.log()
+    console.error("Error", e.message);
 }

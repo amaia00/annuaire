@@ -3,12 +3,12 @@ module.exports = function(grunt) {
 		express: {
 			build: {
 				options : {
-					server: ('controllers/annuaireController.js')
+					server: ('controllers/controller.js')
 				}
 			}	
 		},
 		jshint: {
-			files: ['Gruntfile.js', 'controllers/annuaireController.js', 'shared/annuaire.js'],
+			files: ['Gruntfile.js', 'controllers/controller.js', 'shared/annuaire.js'],
 			options: {
 				globals: {
 					jQuery: true

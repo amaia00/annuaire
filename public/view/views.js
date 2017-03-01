@@ -1,7 +1,7 @@
 /**
  * Created by amaia.nazabal on 2/9/17.
  * TODO:
- * On va essaier de faire les views generiques
+ * Try to remake the view generics
  **/
 
 var app = app || {};
