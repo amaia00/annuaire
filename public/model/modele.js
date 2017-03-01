@@ -18,7 +18,7 @@ var app = app || {};
         defaults: {
             title: '',
             url: '',
-            tags: ''
+            tags: []
         },
         idAttribute: 'title',
         url: function() {

@@ -21,12 +21,13 @@ var app = app || {};
         },
 
         render: function () {
-
-            app.ClientCollection.add({
-                title: this.title.val(),
-                url: this.url.val(),
-                tags: this.tags.val()
-            });
+            if (this.title.val() !== '') {
+                app.ClientCollection.add({
+                    title: this.title.val(),
+                    url: this.url.val(),
+                    tags: this.tags.val()
+                });
+            }
 
             $('#myModal1').modal('hide');
             this.reset();
@@ -37,6 +38,34 @@ var app = app || {};
             this.url.val('');
             this.tags.tagsinput('removeAll');
 
+        }
+    });
+
+    /**
+     * La vue pour lister tous les sites qui sont déjà dans la collection du côté
+     * client.
+     */
+    var ClientViewList = Backbone.View.extend({
+        type: 'ClientViewList',
+
+        el: '#table-body-client',
+
+        template: _.template($('#client-template').html()),
+
+        tagName: 'tr',
+
+        initialize: function () {
+            _.bindAll(this, "render");
+            this.listenTo(this.collection, 'add remove', this.render);
+            this.render();
+        },
+
+        render: function () {
+            this.$el.empty();
+
+            _.each(this.collection.models, function (model) {
+                this.$el.append(this.template(model.toJSON()));
+            }, this);
         }
     });
 
@@ -64,50 +93,26 @@ var app = app || {};
 
         show: function () {
             this.$el.css('display', 'block');
-            new app.ClientViewList({collection: app.ClientCollection});
+            new ClientViewList({collection: app.ClientCollection});
         },
 
-        addSite: function () {
+        addSite: function (e) {
+            e.preventDefault();
+
             new FormClient({el: $('#form-client')});
             this.show();
         },
 
-        removeSite: function (ev) {
-            var title = $(ev.currentTarget).attr('data-title');
-            var url = $(ev.currentTarget).attr('data-url');
+        removeSite: function (e) {
+            e.preventDefault();
+
+            var title = $(e.currentTarget).attr('data-title');
+            var url = $(e.currentTarget).attr('data-url');
 
             var site = app.ClientCollection.findWhere({title: title, url: url});
             app.ClientCollection.remove(site);
 
             this.show();
-        }
-    });
-
-    /**
-    * La vue pour lister tous les sites qui sont déjà dans la collection du côté
-    * client.
-    */
-    app.ClientViewList = Backbone.View.extend({
-        type: 'ClientViewList',
-
-        el: '#table-body-client',
-
-        template: _.template($('#client-template').html()),
-
-        tagName: 'tr',
-
-        initialize: function () {
-            _.bindAll(this, "render");
-            this.listenTo(this.collection, 'add remove', this.render);
-            this.render();
-        },
-
-        render: function () {
-            this.$el.empty();
-
-            _.each(this.collection.models, function (model) {
-                this.$el.append(this.template(model.toJSON()));
-            }, this);
         }
     });
 
@@ -125,11 +130,13 @@ var app = app || {};
         },
 
         render: function () {
-            app.ServerCollection.create({
-                title: this.title.val(),
-                url: this.url.val(),
-                tags: this.tags.val()
-            }, {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+            if (this.title.val() !== '') {
+                app.ServerCollection.create({
+                    title: this.title.val(),
+                    url: this.url.val(),
+                    tags: this.tags.val()
+                }, {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+            }
 
             $('#myModal').modal('hide');
 
@@ -145,55 +152,10 @@ var app = app || {};
     });
 
     /**
-     * La vue qui recupère les événements pour ajouter ou bien supprimer
-     * certains sites de l'annuaire côté serveur, cette vue fait aussi la synchronisation
-     * avec le serveur en utilisant las fonctions de sync.
-     */
-    app.ServerView = Backbone.View.extend({
-        el: '.content-server',
-
-        template: 'server-template',
-
-        events: {
-            'click .add-site': 'addSite',
-            'click .remove-site': 'removeSite'
-        },
-
-        initialize: function () {
-            this.show();
-        },
-
-        addSite: function () {
-            new FormServer({el: $('#form-server')});
-            this.show();
-
-        },
-
-        removeSite: function (ev) {
-            console.debug("DEBUG: remove site");
-            var title = $(ev.currentTarget).attr('data-title');
-            var url = $(ev.currentTarget).attr('data-url');
-
-            console.debug("DEBUG: ", title, url);
-            app.ServerCollection.findWhere({title: title, url: url}).destroy();
-
-        },
-
-        hide: function () {
-            this.$el.css('display', 'none');
-        },
-
-        show: function () {
-            this.$el.css('display', 'block');
-            new app.ServerViewList({collection: app.ServerCollection});
-        }
-    });
-
-    /**
      * La vue pour lister tous les sites qui sont déjà dans la collection du côté
      * serveur.
      */
-    app.ServerViewList = Backbone.View.extend({
+    var ServerViewList = Backbone.View.extend({
         type: 'ServerViewList',
 
         el: '#table-body-server',
@@ -218,6 +180,126 @@ var app = app || {};
         }
     });
 
+    /**
+     * La vue qui recupère les événements pour ajouter ou bien supprimer
+     * certains sites de l'annuaire côté serveur, cette vue fait aussi la synchronisation
+     * avec le serveur en utilisant las fonctions de sync.
+     */
+    app.ServerView = Backbone.View.extend({
+        el: '.content-server',
+
+        template: 'server-template',
+
+        events: {
+            'click .add-site': 'addSite',
+            'click .remove-site': 'removeSite'
+        },
+
+        initialize: function () {
+            this.show();
+        },
+
+        addSite: function (e) {
+            e.preventDefault();
+
+            new FormServer({el: $('#form-server')});
+            this.show();
+
+        },
+
+        removeSite: function (ev) {
+            ev.preventDefault();
+
+            var title = $(ev.currentTarget).attr('data-title');
+            var url = $(ev.currentTarget).attr('data-url');
+
+            app.ServerCollection.findWhere({title: title, url: url}).destroy();
+
+        },
+
+        hide: function () {
+            this.$el.css('display', 'none');
+        },
+
+        show: function () {
+            this.$el.css('display', 'block');
+            new ServerViewList({collection: app.ServerCollection});
+        }
+    });
+
+
+    /*Taf view*/
+
+    app.TagView = Backbone.View.extend({
+        el: '.content-tags',
+
+        template: _.template($('#tags-template').html()),
+
+        table: $('#table-body-tags'),
+
+        initialize: function () {
+            this.show();
+        },
+
+        hide: function () {
+            this.$el.css('display', 'none');
+        },
+
+        show: function () {
+            this.$el.css('display', 'block');
+            this.render();
+        },
+
+        render: function () {
+            this.table.empty();
+
+            _.each(app.ServerCollection.models, function (model) {
+                this.table.append(this.template(model.toJSON()));
+            }, this);
+
+            _.each(app.ClientCollection.models, function (model) {
+                this.table.append(this.template(model.toJSON()));
+            }, this);
+        }
+    });
+
+    app.ViewByTag = Backbone.View.extend({
+        el: '.content-tags',
+
+        template: _.template($('#tags-template').html()),
+
+        table: $('#table-body-tags'),
+
+        initialize: function (options) {
+            this.show(options.selectTag);
+        },
+
+        hide: function () {
+            this.$el.css('display', 'none');
+        },
+
+        show: function (tag) {
+            this.$el.css('display', 'block');
+            this.render(tag);
+        },
+
+        render: function (tag) {
+            this.table.empty();
+
+            _.each(app.ServerCollection.models, function (model) {
+                console.debug(model.attributes.tags);
+                if (model.get('tags').indexOf(tag) !== -1)
+                    this.table.append(this.template(model.toJSON()));
+            }, this);
+
+            _.each(app.ClientCollection.models, function (model) {
+                console.debug(model.attributes.tags);
+                if (model.get('tags').indexOf(tag) !== -1)
+                    this.table.append(this.template(model.toJSON()));
+            }, this);
+        }
+    });
+
 })(jQuery);
 
 /**
@@ -230,6 +312,7 @@ jQuery(document).ready(function () {
 
         if (pathname.match(expr) != null) {
             $(".content-server").css("display", "none");
+            $(".content-tags").css("display", "none");
 
         }
 

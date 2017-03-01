@@ -54,7 +54,7 @@ Annuaire.prototype.bind = function(key, value, tags) {
 		return true;
 
 	} catch(e) {
-	    console.log("Exception", e);
+	    console.error("Exception", e);
 		return false;
 	}
 };

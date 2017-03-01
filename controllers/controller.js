@@ -19,10 +19,6 @@ app.get('/', function(req, res){
     res.sendFile(path.resolve('public/index.html'));
 });
 
-app.get('/annuaire.js', function(req, res) {
-    res.sendFile(path.resolve('shared/annuaire.js'));
-});
-
 app.get('/tag.js', function(req, res) {
     res.sendFile(path.resolve('shared/tag.js'));
 });

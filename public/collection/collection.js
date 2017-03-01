@@ -1,7 +1,7 @@
 /**
  * Created by amaia.nazabal on 2/09/17.
  *
- * Script pour les collecions
+ * Script pour les collections
  *
  */
 
