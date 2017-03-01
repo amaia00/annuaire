@@ -12,12 +12,14 @@ var app = app || {};
     var Collection = Backbone.Collection.extend({
         model: app.Model,
 
-        initialize: function () {
-            this.reset();
-        },
-
         comparator: 'title'
     });
 
-    app.Collection = new Collection();
+    app.ClientCollection = new Collection();
+    app.ServerCollection = new Collection();
+    app.ServerCollection.url = '/bookmarks/';
+
+    app.TagCollection = Backbone.Collection.extend({
+        model: app.Tag
+    });
 })();

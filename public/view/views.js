@@ -1,6 +1,8 @@
 /**
  * Created by amaia.nazabal on 2/9/17.
- */
+ * TODO:
+ * On va essaier de faire les views generiques
+ **/
 
 var app = app || {};
 
@@ -17,14 +19,13 @@ var app = app || {};
 
         render: function () {
 
-            app.Collection.add({
+            app.ClientCollection.add({
                 title: this.$el.find('input[id="key-client"]').val(),
                 url: this.$el.find('input[id="value-client"]').val(),
                 tags: this.$el.find('input[id="tags-client"]').val()
             });
 
             $('#myModal1').modal('hide');
-
             this.clean();
         },
 
@@ -53,21 +54,17 @@ var app = app || {};
             this.show();
         },
 
-        execute: function () {
-            this.$el.html(this.html);
-        },
-
         hide: function () {
             this.$el.css('display', 'none');
         },
 
         show: function () {
             this.$el.css('display', 'block');
-            var view = new app.ClientViewList({collection: app.Collection});
+            new app.ClientViewList({collection: app.ClientCollection});
         },
 
-        addSite: function (e) {
-            var site = new FormClient({el: $('#form-client')});
+        addSite: function () {
+            new FormClient({el: $('#form-client')});
             this.show();
 
         },
@@ -76,8 +73,8 @@ var app = app || {};
             var title = $(ev.currentTarget).attr('data-title');
             var url = $(ev.currentTarget).attr('data-url');
 
-            var site = app.Collection.findWhere({title: title, url: url});
-            app.Collection.remove(site);
+            var site = app.ClientCollection.findWhere({title: title, url: url});
+            app.ClientCollection.remove(site);
 
             this.show();
         }
@@ -101,22 +98,72 @@ var app = app || {};
         render: function () {
             this.$el.empty();
 
-            _.each(app.Collection.models, function (model) {
+            _.each(this.collection.models, function (model) {
+                console.debug("DEBUG Client", model);
                 this.$el.append(this.template(model.toJSON()));
             }, this);
         }
     });
 
+
+    /* Server side views' */
+
+    var FormServer = Backbone.View.extend({
+        initialize: function (e) {
+            this.render(e)
+        },
+
+        render: function () {
+
+            app.ServerCollection.create({
+                title: this.$el.find('input[id="key-serveur"]').val(),
+                url: this.$el.find('input[id="value-serveur"]').val(),
+                tags: this.$el.find('input[id="tags-serveur"]').val()
+            }, {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+
+            $('#myModal').modal('hide');
+            $('#myModal').modal('hide');
+            this.clean();
+        },
+
+        clean: function () {
+            this.$el.find('input[id="key-serveur"]').val('');
+            this.$el.find('input[id="value-serveur"]').val('');
+            this.$el.find('input[id="tags-serveur"]').tagsinput('removeAll');
+
+        }
+    });
     /**
      *
      */
     app.ServerView = Backbone.View.extend({
         el: '.content-server',
-        //tagName: 'tr',
+
         template: 'server-template',
+
+        events: {
+            'click .add-site': 'addSite',
+            'click .remove-site': 'removeSite'
+        },
 
         initialize: function () {
             this.show();
+        },
+
+        addSite: function () {
+            new FormServer({el: $('#form-server')});
+            this.show();
+
+        },
+
+        removeSite: function (ev) {
+            console.debug("DEBUG: remove site");
+            var title = $(ev.currentTarget).attr('data-title');
+            var url = $(ev.currentTarget).attr('data-url');
+
+            console.debug("DEBUG: ", title, url);
+            app.ServerCollection.where({title: title, url: url})[0].destroy();
+
         },
 
         hide: function () {
@@ -125,6 +172,33 @@ var app = app || {};
 
         show: function () {
             this.$el.css('display', 'block');
+            new app.ServerViewList({collection: app.ServerCollection});
+        }
+    });
+
+
+    app.ServerViewList = Backbone.View.extend({
+        type: 'ServerViewList',
+
+        el: '#table-body-server',
+
+        template: _.template($('#server-template').html()),
+
+        tagName: 'tr',
+
+        initialize: function () {
+            _.bindAll(this, "render");
+            this.listenTo(this.collection, 'all', this.render);
+
+            app.ServerCollection.fetch();
+        },
+
+        render: function () {
+            this.$el.empty();
+            console.debug("DEBUG: Server list render.");
+            _.each(this.collection.models, function (model) {
+                this.$el.append(this.template(model.toJSON()));
+            }, this);
         }
     });
 

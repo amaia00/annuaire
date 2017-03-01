@@ -16,6 +16,7 @@ var app = app || {};
 
         server: function () {
             this.loadView(new app.ServerView());
+            console.debug("DEBUG: serverView loaded in the router");
             $('#client-view').parent().removeClass('active');
             $('#server-view').parent().addClass('active');
         },

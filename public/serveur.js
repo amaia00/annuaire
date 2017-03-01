@@ -16,7 +16,7 @@ jQuery(function() {
  */
 function removeURL (key) {
     Interface.delete(key);
-};
+}
 
 /**
  * Ajoute un nouveau site à l'annuaire

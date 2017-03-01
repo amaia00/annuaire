@@ -70,6 +70,6 @@ Annuaire.prototype.remove = function(key) {
 
 try {
     module.exports = new Annuaire();
-}catch (Exception){
-
+}catch (e){
+    console.log()
 }

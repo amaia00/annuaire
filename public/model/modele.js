@@ -14,13 +14,17 @@ var app = app || {};
             title: '',
             url: '',
             tags: ''
+        },
+        idAttribute: 'title',
+        url: function() {
+            return "/bookmarks/" + this.get("title");
         }
     });
 
 
-    app.Categorie = Backbone.Model.extend({
+    app.Tag = Backbone.Model.extend({
         defaults: {
-            categorie: ''
+            tag: ''
         }
     });
 })();

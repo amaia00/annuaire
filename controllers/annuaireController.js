@@ -4,6 +4,11 @@ var bodyParser = require('body-parser');
 var Tag = require('../shared/tag.js');
 var annuaire = require('../shared/annuaire.js');
 
+/**
+ * TODO:
+ * Add resource bookmarks (in plural) for rest services
+ */
+
 var app = module.exports = express();
 
 /**
@@ -33,7 +38,7 @@ app.get('/tag.js', function(req, res) {
  * Retourne la entité de un link selon l'identificateur envoyé.
  * 404 si l'identificateur ne correspond pas à aucun link
  */
-app.get('/get/:id', function (req, res) {
+app.get('/bookmarks/:id', function (req, res) {
     var site = annuaire.get(req.params.id);
 
     if (!Object.keys(link).length) {
@@ -46,13 +51,14 @@ app.get('/get/:id', function (req, res) {
 /**
  * Retourne tous les links de l'annuaire
  */
-app.get('/all', function (req, res) {
+app.get('/bookmarks/', function (req, res) {
     var all_bookmarks = annuaire.collection;
     var collection = [];
 
     for (var key in all_bookmarks) {
         if (all_bookmarks.hasOwnProperty(key))
-            collection.push({nom: key, url: all_bookmarks[key]});
+            collection.push({title: key, url: all_bookmarks[key].value,
+                tags: all_bookmarks[key].tags.collection.join(", ")});
     }
 
     res.status(200).send(JSON.stringify(collection));
@@ -61,11 +67,12 @@ app.get('/all', function (req, res) {
 /**
  * Cette méthode crée un nouveau link
  */
-app.post('/', urlencodedParser, function (req, res) {
+app.post('/bookmarks/', urlencodedParser, function (req, res) {
     try {
-        var url = req.body.url;
-        var nom = req.body.nom;
-        var tags = req.body.tag;
+        var model = JSON.parse(req.body.model);
+        var url = model.url;
+        var nom = model.title;
+        var tags = model.tags;
 
         var tag = new Tag();
         tags.split(',').forEach(function (e) {
@@ -82,7 +89,7 @@ app.post('/', urlencodedParser, function (req, res) {
 /**
  * Cette méthode supprime un link
  */
-app.delete('/:id', function (req, res) {
+app.delete('/bookmarks/:id', function (req, res) {
     annuaire.remove(req.params.id);
     res.status(204).send();
 });

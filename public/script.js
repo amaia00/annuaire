@@ -3,6 +3,8 @@
  */
 'use strict';
 
+var app = app || {};
+
 var Interface = {
 
     /**
@@ -10,37 +12,39 @@ var Interface = {
      */
     getAll: function () {
         jQuery.ajax({
-            url: '/all',
+            url: 'bookmarks/',
             method: 'GET',
+            async: 'false',
             statusCode: {
                 500: function (error) {
                     jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
                         'Serveur error: ' + error + '</div>');
+
+                    return false;
                 }
             }
         }).done(function (data) {
             var list = JSON.parse(data);
 
-            jQuery('#pairs-serveur > tbody').empty();
-            list.forEach(function (key) {
+            console.debug("DEBBUG: list: ",list);
+            /*
+            _.each(list, function (obj) {
+                console.log(obj);
+                app.ServerCollection.add({
+                    title: obj.title,
+                    url: obj.url,
+                    tags: obj.tags.join(', ')
+                });
+            });*/
 
-                jQuery("#pairs-serveur > tbody").append('<tr><td>' + key.nom + '</td><td>' + key.url.value + ' </td>' +
-                    '<td>' + key.url.tags.collection.join(', ') + '</td><td class="delete_btn"> ' +
-                    '<button type="button" class="btn btn-danger btn-sm remove-serveur" ' +
-                    'onclick="removeURL(\'' + key.nom + '\')"> <icon class="glyphicon glyphicon-remove">' +
-                    '</icon> supprimer</button></td></tr>');
-
-                var height_body_site = jQuery(".body_site .container").height();
-                jQuery(".body_site").css("height", height_body_site + "px");
-
-            });
-
-            jQuery("#key-serveur").focus();
-            jQuery('#myModal').modal('hide');
+            app.ServerCollection.fetch({url: 'http://localhost:3000/bookmarks/'});
+            console.debug("DEBUG: Done getAll call");
 
         }).fail(function (error) {
             jQuery(".error-section").empty().html('<div class="alert alert-danger" role="alert">' +
                 'Serveur error: ' + error + '</div>');
+
+            return false;
         });
     },
 
@@ -57,7 +61,7 @@ var Interface = {
         params['tag'] = tags;
 
         jQuery.ajax({
-            url: '/',
+            url: 'bookmarks/',
             method: 'POST',
             data: params,
             statusCode: {
@@ -84,7 +88,7 @@ var Interface = {
      */
     delete: function (key) {
         jQuery.ajax({
-            url: '/' + key,
+            url: 'bookmarks/' + key,
             method: 'DELETE',
             statusCode: {
                 500: function () {
@@ -108,7 +112,7 @@ var Interface = {
      */
     get: function (key) {
         jQuery.ajax({
-            url: '/get/' + key,
+            url: 'bookmarks/' + key,
             method: 'GET',
             statusCode: {
                 500: function () {

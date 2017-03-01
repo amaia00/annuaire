@@ -8,7 +8,7 @@
  */
 function Tag () {
     this.collection = [];
-};
+}
 
 /**
  *
@@ -55,5 +55,5 @@ Tag.prototype.print = function () {
 try {
     module.exports = Tag;
 }catch (e){
-    console.log("Exception: ", e)
+    console.error("Exception: ", e);
 }
