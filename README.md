@@ -13,6 +13,7 @@
 
 - [x] Création et supression des liens côté client.
 - [x] Création et supression des liens côté serveur.
+- [x] Implementation de styles avec la librairie Bootstrap.
 
 
 ### Unité d'Enseignement
@@ -36,7 +37,7 @@
 2. NPM 3.10.10 ou supérieures
 3. Grunt v1.0.1 ou supérieure
 4. Grunt-cli v1.2.0 ou supérieure
-5. Internet pour acceder aux libraries utilsées
+5. Internet pour acceder aux libraries utilsées (CDN)
 
 
 ### Comment executer?

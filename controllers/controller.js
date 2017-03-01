@@ -2,12 +2,7 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var Tag = require('../shared/tag.js');
-var annuaire = require('../shared/annuaire.js');
-
-/**
- * TODO:
- * Add resource bookmarks (in plural) for rest services
- */
+var Bookmark = require('../shared/annuaire.js');
 
 var app = module.exports = express();
 
@@ -39,7 +34,7 @@ app.get('/tag.js', function(req, res) {
  * 404 si l'identificateur ne correspond pas à aucun link
  */
 app.get('/bookmarks/:id', function (req, res) {
-    var site = annuaire.get(req.params.id);
+    var site = Bookmark.get(req.params.id);
 
     if (!Object.keys(link).length) {
         res.status(404).send();
@@ -49,10 +44,10 @@ app.get('/bookmarks/:id', function (req, res) {
 });
 
 /**
- * Retourne tous les links de l'annuaire
+ * Retourne tous les links de l'Bookmark
  */
 app.get('/bookmarks/', function (req, res) {
-    var all_bookmarks = annuaire.collection;
+    var all_bookmarks = Bookmark.collection;
     var collection = [];
 
     for (var key in all_bookmarks) {
@@ -79,8 +74,8 @@ app.post('/bookmarks/', urlencodedParser, function (req, res) {
             tag.add(e);
         });
 
-        annuaire.bind(nom, url, tag);
-        res.status(201).send(JSON.stringify(annuaire.get(nom)));
+        Bookmark.bind(nom, url, tag);
+        res.status(201).send(JSON.stringify(Bookmark.get(nom)));
     }catch (e){
         res.status(500).send(e.message);
     }
@@ -90,7 +85,7 @@ app.post('/bookmarks/', urlencodedParser, function (req, res) {
  * Cette méthode supprime un link
  */
 app.delete('/bookmarks/:id', function (req, res) {
-    annuaire.remove(req.params.id);
+    Bookmark.remove(req.params.id);
     res.status(204).send();
 });
 

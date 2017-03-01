@@ -10,7 +10,7 @@ var escapeHtml = function(val) {
     return val.replace(/[<>]/g, '');
 };
 /**
- * Initialise la collection de l'annuaire
+ * Initialise la collection de l'Bookmark
  *
  * @constructor
  */

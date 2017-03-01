@@ -9,7 +9,8 @@ var app = app || {};
     'use strict';
 
     /**
-     *
+     * La vue pour le formulaire du côté client, pour l'ajouter dans la collection
+     * de bookmarks.
      */
     var FormClient = Backbone.View.extend({
         initialize: function (e) {
@@ -28,10 +29,10 @@ var app = app || {};
             });
 
             $('#myModal1').modal('hide');
-            this.clean();
+            this.reset();
         },
 
-        clean: function () {
+        reset: function () {
             this.title.val('');
             this.url.val('');
             this.tags.tagsinput('removeAll');
@@ -40,7 +41,8 @@ var app = app || {};
     });
 
     /**
-     *
+     * La vue qui recupère les événements pour ajouter ou bien supprimer
+     * certains sites de l'annuaire côté client.
      */
     app.ClientView = Backbone.View.extend({
         el: '.content-client',
@@ -81,6 +83,10 @@ var app = app || {};
         }
     });
 
+    /**
+    * La vue pour lister tous les sites qui sont déjà dans la collection du côté
+    * client.
+    */
     app.ClientViewList = Backbone.View.extend({
         type: 'ClientViewList',
 
@@ -100,39 +106,48 @@ var app = app || {};
             this.$el.empty();
 
             _.each(this.collection.models, function (model) {
-                console.debug("DEBUG Client", model);
                 this.$el.append(this.template(model.toJSON()));
             }, this);
         }
     });
 
 
-    /* Server side views */
+    /**
+     * La vue pour le formulaire du côté serveur, pour l'ajouter dans la collection
+     * de bookmarks, et aussi l'ajoute dans le serveur à travers de create.
+     */
     var FormServer = Backbone.View.extend({
         initialize: function (e) {
-            this.render(e)
+            this.title = $('#key-serveur');
+            this.url = $('#value-serveur');
+            this.tags = $('#tags-serveur');
+            this.render(e);
         },
 
         render: function () {
             app.ServerCollection.create({
-                title: this.$el.find('input[id="key-serveur"]').val(),
-                url: this.$el.find('input[id="value-serveur"]').val(),
-                tags: this.$el.find('input[id="tags-serveur"]').val()
+                title: this.title.val(),
+                url: this.url.val(),
+                tags: this.tags.val()
             }, {url: '/bookmarks/', method: 'POST', emulateJSON: true});
 
             $('#myModal').modal('hide');
-            this.clean();
+
+            this.reset();
         },
 
-        clean: function () {
-            this.$el.find('input[id="key-serveur"]').val('');
-            this.$el.find('input[id="value-serveur"]').val('');
-            this.$el.find('input[id="tags-serveur"]').tagsinput('removeAll');
+        reset: function () {
+            this.title.val('');
+            this.url.val('');
+            this.tags.tagsinput('removeAll');
 
         }
     });
+
     /**
-     *
+     * La vue qui recupère les événements pour ajouter ou bien supprimer
+     * certains sites de l'annuaire côté serveur, cette vue fait aussi la synchronisation
+     * avec le serveur en utilisant las fonctions de sync.
      */
     app.ServerView = Backbone.View.extend({
         el: '.content-server',
@@ -160,7 +175,7 @@ var app = app || {};
             var url = $(ev.currentTarget).attr('data-url');
 
             console.debug("DEBUG: ", title, url);
-            app.ServerCollection.where({title: title, url: url})[0].destroy();
+            app.ServerCollection.findWhere({title: title, url: url}).destroy();
 
         },
 
@@ -174,7 +189,10 @@ var app = app || {};
         }
     });
 
-
+    /**
+     * La vue pour lister tous les sites qui sont déjà dans la collection du côté
+     * serveur.
+     */
     app.ServerViewList = Backbone.View.extend({
         type: 'ServerViewList',
 
@@ -193,7 +211,7 @@ var app = app || {};
 
         render: function () {
             this.$el.empty();
-            console.debug("DEBUG: Server list render.");
+
             _.each(this.collection.models, function (model) {
                 this.$el.append(this.template(model.toJSON()));
             }, this);
@@ -202,6 +220,9 @@ var app = app || {};
 
 })(jQuery);
 
+/**
+ * TODO Sofiaa
+ */
 jQuery(document).ready(function () {
     $(window).load(function () {
         var pathname = window.location.href;

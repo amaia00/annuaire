@@ -1,22 +1,27 @@
 /**
  * Created by amaia.nazabal on 2/9/17.
+ *
+ * Script pour le routage du côte client.
  */
 var app = app || {};
 
 (function ($) {
     'use strict';
 
+    /**
+     * Le router pour la gestion des urls côté client
+     */
     var AppRouter = Backbone.Router.extend({
         routes: {
             '': 'server',
-            'server': 'server', //par défaut le côté serveur
+            'server': 'server',
             'client': 'client',
             'tag/:tag' : 'tag'
         },
 
         server: function () {
             this.loadView(new app.ServerView());
-            console.debug("DEBUG: serverView loaded in the router");
+
             $('#client-view').parent().removeClass('active');
             $('#server-view').parent().addClass('active');
         },
@@ -25,6 +30,10 @@ var app = app || {};
             this.loadView(new app.ClientView());
             $('#server-view').parent().removeClass('active');
             $('#client-view').parent().addClass('active');
+        },
+
+        tag: function () {
+            //TODO
         },
 
         loadView: function (view) {
