@@ -202,6 +202,35 @@ var app = app || {};
         }
     });
 
+    /**
+     *
+     */
+    app.TagView = Backbone.View.extend({
+        el: '.content-tag',
+
+        template: 'tag-template',
+
+        events: {
+            'click #form-tag .search-tags': 'search-tag'
+        },
+
+        initialize: function () {
+            this.show();
+        },
+
+        hide: function () {
+            this.$el.css('display', 'none');
+        },
+
+        show: function () {
+            this.$el.css('display', 'block');
+            new app.ClientViewList({collection: app.ClientCollection});
+        },
+
+
+    });
+
+
 })(jQuery);
 
 jQuery(document).ready(function () {
