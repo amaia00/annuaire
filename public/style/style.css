@@ -69,7 +69,7 @@ html, body {
 .body_site {
     height: calc(100% - 267px);
 }
-.content-server, .content-client, .content-tag {
+.content-server, .content-client, .content-tags {
     background: #fff;
     margin: 20px 0;
     border-radius: 10px;
@@ -151,4 +151,10 @@ html, body {
 }
 .delete_btn {
     width:90px;
+}
+
+.dg {
+    padding: 10px;
+    text-align: center;
+
 }

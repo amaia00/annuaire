@@ -28,13 +28,24 @@
     <div class="container">
         <section id="routage">
             <ul class="nav nav-tabs">
-                <li class="nav active"><a id="server-view" href="#/server" data-target="#server"><i class="fa fa-server"
-                                                                                                    aria-hidden="true"></i>Côte
-                    Serveur </a></li>
-                <li class="nav"><a id="client-view" href="#/client" data-target="#client"><i class="fa fa-desktop"
-                                                                                             aria-hidden="true"></i>Côte
-                    Client </a></li>
-                <li class="nav"><a id="tag-view" href="#/tag" data-target="#tag"><i class="fa fa-tags" aria-hidden="true"></i>Tag</a></li>
+                <li class="nav active">
+                    <a id="server-view" href="#/server" data-target="#server">
+                        <i class="fa fa-server" aria-hidden="true"></i>
+                        Côte  Serveur
+                    </a>
+                </li>
+                <li class="nav">
+                    <a id="client-view" href="#/client" data-target="#client">
+                        <i class="fa fa-desktop" aria-hidden="true"></i>
+                        Côte Client
+                    </a>
+                </li>
+                <li class="nav">
+                    <a id="tag-view" href="#/tag" data-target="#tag">
+                        <i class="fa fa-tag" aria-hidden="true"></i>
+                        Par tag
+                    </a>
+                </li>
             </ul>
         </section>
     </div>
@@ -122,7 +133,11 @@
                             <tr>
                                 <td><%= title %></td>
                                 <td><%= url %></td>
-                                <td><%= tags %></td>
+                                <td>
+                                    <% _.each(tags.split(','), function(tag) { %>
+                                    <a href="#/tag/<%=tag%>"><%=tag%></a>
+                                    <%}) %>
+                                </td>
                                 <td class="delete_btn">
                                     <button type="button" data-title="<%= title%>" data-url="<%= url%>"
                                             class="btn btn-danger btn-sm remove-site">
@@ -197,7 +212,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <table id="pairs-client" class="table table-striped table-bordered">
+                    <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
                             <td>Nom</td>
@@ -211,7 +226,11 @@
                             <tr>
                                 <td><%= title %></td>
                                 <td><%= url %></td>
-                                <td><%= tags %></td>
+                                <td>
+                                    <% _.each(tags.split(','), function(tag) { %>
+                                    <a href="#/tag/<%=tag%>"><%=tag%></a>
+                                    <%}) %>
+                                </td>
                                 <td class="delete_btn">
                                     <button type="button" data-title="<%= title%>" data-url="<%= url%>"
                                             class="btn btn-danger btn-sm remove-site">
@@ -226,50 +245,45 @@
                 </div>
             </div>
         </section>
-        <section class="content-tag" style="display: none;">
-            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1">
+
+        <section class="content-tags" style="display: none;">
+            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                     aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel2">Formulaire coté client </h4>
-                        </div>
-                        <div class="modal-body">
-                            <form id="form-tag">
-                                <div class="input-group">
-                                    <label class="for_labels"> Tags : </label>
-                                    <span class="input-group-addon" id="basic-addon7"><i class="fa fa-search" aria-hidden="true"></i></span>
-                                    <input type="text" id="search-tag" autofocus class="form-control"
-                                           placeholder="Entrer un tag" value=""
-                                           aria-describedby="basic-addon7"/><br/>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i
-                                            class="fa fa-times" aria-hidden="true"></i></button>
-                                    <button type="button" class="btn btn-success btn-sm search-tags">
-                                        <icon class="glyphicon glyphicon-ok"></icon>
-                                    </button>
-                                </div>
-                            </form>
+                            <h4 class="modal-title" id="myModalLabel2">Formulaire rechercher tag </h4>
+                            <div class="input-group">
+                                 <span class="input-group-addon" id="basic-addon7"><i class="fa fa-tags" aria-hidden="true"></i></span>
+                                <input type="text" class="form-control" placeholder="Entrer le tag"
+                                   value=""/>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i
+                                        class="fa fa-times" aria-hidden="true"></i></button>
+                                <button type="button" class="btn btn-success btn-sm search-tags">
+                                    <icon class="glyphicon glyphicon-ok"></icon>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h4>Cliquer sur le bouton pour chercher un tag</h4>
-                    <button type="button" class="btn plus_btn" data-toggle="modal" data-target="#myModal2">
-                        <label>Chercher un tag</label>
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                    </button>
-
+                    <h4>Entrer un tag</h4>
+                    <div style="margin: auto;">
+                        <button type="button" class="btn plus_btn" data-toggle="modal" data-target="#myModal2">
+                            <label>Chercher</label>
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <table id="pairs-tag" class="table table-striped table-bordered">
+                    <table class="table table-striped table-bordered">
                         <thead>
                         <tr>
                             <td>Nom</td>
@@ -278,12 +292,16 @@
                             <td></td>
                         </tr>
                         </thead>
-                        <tbody id="table-body-tag">
-                        <script type="text/template" id="tag-template">
+                        <tbody id="table-body-tags">
+                        <script type="text/template" id="tags-template">
                             <tr>
                                 <td><%= title %></td>
                                 <td><%= url %></td>
-                                <td><%= tags %></td>
+                                <td>
+                                    <% _.each(tags.split(','), function(tag) { %>
+                                    <a href="#/tag/<%=tag%>"><%=tag%></a>
+                                    <%}) %>
+                                </td>
                                 <td class="delete_btn">
                                     <button type="button" data-title="<%= title%>" data-url="<%= url%>"
                                             class="btn btn-danger btn-sm remove-site">
@@ -309,7 +327,6 @@
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 <script src="../tag.js"></script>
-<script src="../annuaire.js"></script>
 <script src="model/modele.js"></script>
 <script src="collection/collection.js"></script>
 <script src="view/views.js"></script>

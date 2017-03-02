@@ -1,22 +1,28 @@
 /**
  * Created by amaia.nazabal on 2/9/17.
+ *
+ * Script pour le routage du côte client.
  */
 var app = app || {};
 
 (function ($) {
     'use strict';
 
+    /**
+     * Le router pour la gestion des urls côté client
+     */
     var AppRouter = Backbone.Router.extend({
         routes: {
             '': 'server',
-            'server': 'server', //par défaut le côté serveur
+            'server': 'server',
             'client': 'client',
-            'tag' : 'tag'
+            'tag': 'tag',
+            'tag/:param': 'tag'
         },
 
         server: function () {
             this.loadView(new app.ServerView());
-            console.debug("DEBUG: serverView loaded in the router");
+
             $('#client-view').parent().removeClass('active');
             $('#server-view').parent().addClass('active');
             $('#tag-view').parent().removeClass('active');
@@ -29,16 +35,21 @@ var app = app || {};
             $('#tag-view').parent().removeClass('active');
         },
 
-        loadView: function (view) {
-            this.view && this.view.hide();
-            this.view = view;
-        },
-        tag: function () {
-            this.loadView(new app.TagView());
+        tag: function (param) {
+
+            if (typeof param !== 'undefined' && param != null)
+                this.loadView(new app.ViewByTag({selectTag: param}));
+            else
+                this.loadView(new app.TagView());
+
             $('#server-view').parent().removeClass('active');
             $('#client-view').parent().removeClass('active');
             $('#tag-view').parent().addClass('active');
+        },
 
+        loadView: function (view) {
+            this.view && this.view.hide();
+            this.view = view;
         }
     });
 
