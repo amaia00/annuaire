@@ -13,9 +13,9 @@ var app = app || {};
      */
     var AppRouter = Backbone.Router.extend({
         initialize: function () {
-            console.debug("DEBUG: Initializing application... ");
-            console.debug("DEBUG: Server collection loaded.");
-            app.ServerCollection.fetch();
+            if (app.DEBUG) {
+                console.debug("DEBUG: Initializing application... ");
+            }
         },
 
         routes: {
@@ -27,6 +27,11 @@ var app = app || {};
         },
 
         server: function () {
+
+            if (app.DEBUG) {
+                console.debug("DEBUG: Route to server view.");
+            }
+
             this.loadView(new app.ServerView());
 
             $('#client-view').parent().removeClass('active');
@@ -38,7 +43,13 @@ var app = app || {};
         },
 
         client: function () {
+
+            if (app.DEBUG) {
+                console.debug("DEBUG: Route to client view.");
+            }
+
             this.loadView(new app.ClientView());
+
             $('#server-view').parent().removeClass('active');
             $('#client-view').parent().addClass('active');
             $('#tag-view').parent().removeClass('active');
@@ -49,16 +60,14 @@ var app = app || {};
 
         tag: function (param) {
 
-            console.debug("DEBUG: Route to tag view.");
-            console.debug("DEBUG: View param: ", param);
-
-            if (typeof param !== 'undefined' && param != null) {
-                console.debug("DEBUG: View with parameters");
-                this.loadView(new app.ViewByTag({selectTag: param}));
-            } else {
-                console.debug("DEBUG: View without parameters");
-                this.loadView(new app.ViewByTag({}));
+            if (app.DEBUG) {
+                console.debug("DEBUG: Route to tag view.", param);
             }
+
+            if (typeof param !== 'undefined' && param != null)
+                this.loadView(new app.ViewByTag({selectTag: param}));
+            else
+                this.loadView(new app.ViewByTag({}));
 
             $('#server-view').parent().removeClass('active');
             $('#client-view').parent().removeClass('active');
@@ -75,10 +84,16 @@ var app = app || {};
     });
 
     app.appRouter = new AppRouter();
+    app.DEBUG = false;
 
     /**
      * On active l'option pour la gestion de l'historial du navigateur
      */
     Backbone.history.start();
+
+
+    if (app.DEBUG) {
+        console.debug("DEBUG: History app initialized.");
+    }
 
 })(jQuery);

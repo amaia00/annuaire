@@ -1,6 +1,5 @@
 /**
  * Created by amaia.nazabal on 2/9/17.
- * TODO: try to remake the view generics
  **/
 
 var app = app || {};
@@ -31,6 +30,11 @@ var app = app || {};
                     url: this.url.val(),
                     tags: this.tags.val()
                 });
+
+                if (app.DEBUG) {
+                    console.debug("DEBUG: Site added client side.");
+                }
+
             }
 
             $('#myModal1').modal('hide');
@@ -116,6 +120,11 @@ var app = app || {};
             var site = app.ClientCollection.findWhere({title: title, url: url});
             app.ClientCollection.remove(site);
 
+
+            if (app.DEBUG) {
+                console.debug("DEBUG: Site removed client side.");
+            }
+
             this.show();
         }
     });
@@ -127,6 +136,10 @@ var app = app || {};
      */
     var FormServer = Backbone.View.extend({
         initialize: function (e) {
+            if (app.DEBUG) {
+                console.debug("DEBUG: Form server initialized.");
+            }
+
             this.title = $('#key-serveur');
             this.url = $('#value-serveur');
             this.tags = $('#tags-serveur');
@@ -144,6 +157,11 @@ var app = app || {};
                     url: this.url.val(),
                     tags: this.tags.val()
                 }, {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+
+                if (app.DEBUG) {
+                    console.debug("DEBUG: Site added server side.");
+                }
+
             }
 
             $('#myModal').modal('hide');
@@ -155,7 +173,6 @@ var app = app || {};
             this.title.val('');
             this.url.val('');
             this.tags.tagsinput('removeAll');
-
         }
     });
 
@@ -173,16 +190,24 @@ var app = app || {};
         tagName: 'tr',
 
         initialize: function () {
+            if (app.DEBUG) {
+                console.debug("DEBUG: Sites server collection initialized.");
+            }
+
             _.bindAll(this, "render");
             this.collection.bind('sync remove', this.render);
             app.ServerCollection.fetch();
         },
 
         render: function () {
+            if (app.DEBUG){
+                console.debug("DEBUG: Render function for sites list.");
+            }
+
             this.$el.empty();
 
             _.each(this.collection.models, function (model) {
-                if (model.get('title') != '')
+                if (typeof (model.get('tags')) !== 'object')
                     this.$el.append(this.template(model.toJSON()));
             }, this);
         }
@@ -204,6 +229,10 @@ var app = app || {};
         },
 
         initialize: function () {
+            if (app.DEBUG) {
+                console.debug("DEBUG: Server view initialized.");
+            }
+
             this.show();
         },
 
@@ -222,6 +251,10 @@ var app = app || {};
             var url = $(ev.currentTarget).attr('data-url');
 
             app.ServerCollection.findWhere({title: title, url: url}).destroy();
+
+            if (app.DEBUG) {
+                console.debug("DEBUG: Site removed server side.");
+            }
 
         },
 
@@ -267,9 +300,6 @@ var app = app || {};
 
             tag = tag || '';
 
-            console.debug("DEBUG: View param tag after instruction:", tag);
-            console.debug(app.ServerCollection.models);
-
             app.ServerCollection.each(function (model) {
 
                 if (model.get('tags').indexOf(tag) !== -1)
@@ -294,10 +324,12 @@ var app = app || {};
         template: _.template($('#tags-list').html()),
 
         initialize: function () {
-            console.debug("DEBUG: tag list initialized.");
+            if (app.DEBUG) {
+                console.debug("DEBUG: Tag list view initialized.");
+            }
+
             this.$el.empty();
             _.each(app.TagCollection.models, function (model) {
-                console.debug("DEBUG: Model tag list:", model);
                 this.$el.append(this.template(model.toJSON()));
             }, this);
         }
@@ -318,13 +350,15 @@ var app = app || {};
         },
 
         searchTag: function () {
-            console.debug("DEBUG: Search tag in");
+            if (app.DEBUG) {
+                console.debug("DEBUG: Tag form initialized.");
+            }
+
             $('#myModal2').modal('hide');
             app.appRouter.navigate('#/tag/' + $('#tag-search').val(), {trigger: true});
         },
 
         listTag: function () {
-            console.debug("DEBUG: Event catch!");
             new TagList();
         }
     });

@@ -35,12 +35,9 @@ var app = app || {};
     app.TagCollection = new TagCollection();
     app.ServerCollection.bind('sync remove', function () {
         _.each(app.ServerCollection.models, function (model) {
-            console.debug("DEBUG: Model collection", model);
-            console.debug("DEBUG: Tags", model.get('tags'));
 
             try {
                 _.forEach(model.get('tags').split(','), function (tag) {
-                    console.debug("DEBUG: tag", tag);
                     app.TagCollection.add({tag: tag});
                 });
             }catch (e){
@@ -48,5 +45,10 @@ var app = app || {};
             }
         }, this)
     });
+
+
+    if (app.DEBUG) {
+        console.debug("DEBUG: Collections loaded.");
+    }
 
 })();

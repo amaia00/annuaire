@@ -35,4 +35,8 @@ var app = app || {};
         },
         idAttribute: 'tag'
     });
+
+    if (app.DEBUG) {
+        console.debug("DEBUG: Models loaded.");
+    }
 })();
