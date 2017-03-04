@@ -2,12 +2,7 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var Tag = require('../shared/tag.js');
-var annuaire = require('../shared/annuaire.js');
-
-/**
- * TODO:
- * Add resource bookmarks (in plural) for rest services
- */
+var Bookmark = require('../shared/annuaire.js');
 
 var app = module.exports = express();
 
@@ -24,10 +19,6 @@ app.get('/', function(req, res){
     res.sendFile(path.resolve('public/index.html'));
 });
 
-app.get('/annuaire.js', function(req, res) {
-    res.sendFile(path.resolve('shared/annuaire.js'));
-});
-
 app.get('/tag.js', function(req, res) {
     res.sendFile(path.resolve('shared/tag.js'));
 });
@@ -39,7 +30,7 @@ app.get('/tag.js', function(req, res) {
  * 404 si l'identificateur ne correspond pas à aucun link
  */
 app.get('/bookmarks/:id', function (req, res) {
-    var site = annuaire.get(req.params.id);
+    var site = Bookmark.get(req.params.id);
 
     if (!Object.keys(link).length) {
         res.status(404).send();
@@ -49,16 +40,16 @@ app.get('/bookmarks/:id', function (req, res) {
 });
 
 /**
- * Retourne tous les links de l'annuaire
+ * Retourne tous les links de l'Bookmark
  */
 app.get('/bookmarks/', function (req, res) {
-    var all_bookmarks = annuaire.collection;
+    var all_bookmarks = Bookmark.collection;
     var collection = [];
 
     for (var key in all_bookmarks) {
         if (all_bookmarks.hasOwnProperty(key))
             collection.push({title: key, url: all_bookmarks[key].value,
-                tags: all_bookmarks[key].tags.collection.join(", ")});
+                tags: all_bookmarks[key].tags.collection.join(',')});
     }
 
     res.status(200).send(JSON.stringify(collection));
@@ -79,8 +70,8 @@ app.post('/bookmarks/', urlencodedParser, function (req, res) {
             tag.add(e);
         });
 
-        annuaire.bind(nom, url, tag);
-        res.status(201).send(JSON.stringify(annuaire.get(nom)));
+        Bookmark.bind(nom, url, tag);
+        res.status(201).send(JSON.stringify(Bookmark.get(nom)));
     }catch (e){
         res.status(500).send(e.message);
     }
@@ -90,17 +81,17 @@ app.post('/bookmarks/', urlencodedParser, function (req, res) {
  * Cette méthode supprime un link
  */
 app.delete('/bookmarks/:id', function (req, res) {
-    annuaire.remove(req.params.id);
+    Bookmark.remove(req.params.id);
     res.status(204).send();
 });
 
 
 
 /*
-Pour les test
-var server = app.listen(8081, function () {
-    var host = server.address().address;
-    var port = server.address().port;
+ Pour les test
+ var server = app.listen(8081, function () {
+ var host = server.address().address;
+ var port = server.address().port;
 
-    console.log("Serveur en écoutant dans http://%s:%s ...", host, port)
-});*/
+ console.log("Serveur en écoutant dans http://%s:%s ...", host, port)
+ });*/

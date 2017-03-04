@@ -44,5 +44,12 @@
 Executer la commande suivante:
 
 ```
+
+npm install grunt --save-dev
+
+npm install grunt-express
+
+npm install express
+
 grunt build
 ```

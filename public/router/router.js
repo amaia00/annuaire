@@ -12,6 +12,12 @@ var app = app || {};
      * Le router pour la gestion des urls côté client
      */
     var AppRouter = Backbone.Router.extend({
+        initialize: function () {
+            console.debug("DEBUG: Initializing application... ");
+            console.debug("DEBUG: Server collection loaded.");
+            app.ServerCollection.fetch();
+        },
+
         routes: {
             '': 'server',
             'server': 'server',
@@ -26,6 +32,9 @@ var app = app || {};
             $('#client-view').parent().removeClass('active');
             $('#server-view').parent().addClass('active');
             $('#tag-view').parent().removeClass('active');
+
+            $(".content-client").css("display", "none");
+            $(".content-tags").css("display", "none");
         },
 
         client: function () {
@@ -33,18 +42,30 @@ var app = app || {};
             $('#server-view').parent().removeClass('active');
             $('#client-view').parent().addClass('active');
             $('#tag-view').parent().removeClass('active');
+
+            $(".content-server").css("display", "none");
+            $(".content-tags").css("display", "none");
         },
 
         tag: function (param) {
 
-            if (typeof param !== 'undefined' && param != null)
+            console.debug("DEBUG: Route to tag view.");
+            console.debug("DEBUG: View param: ", param);
+
+            if (typeof param !== 'undefined' && param != null) {
+                console.debug("DEBUG: View with parameters");
                 this.loadView(new app.ViewByTag({selectTag: param}));
-            else
-                this.loadView(new app.TagView());
+            } else {
+                console.debug("DEBUG: View without parameters");
+                this.loadView(new app.ViewByTag({}));
+            }
 
             $('#server-view').parent().removeClass('active');
             $('#client-view').parent().removeClass('active');
             $('#tag-view').parent().addClass('active');
+
+            $(".content-server").css("display", "none");
+            $(".content-client").css("display", "none");
         },
 
         loadView: function (view) {
@@ -53,7 +74,7 @@ var app = app || {};
         }
     });
 
-    new AppRouter();
+    app.appRouter = new AppRouter();
 
     /**
      * On active l'option pour la gestion de l'historial du navigateur
