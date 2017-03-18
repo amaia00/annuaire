@@ -22,6 +22,7 @@ var app = app || {};
      * Les instances pour les bookmarks de côté serveur et client
      */
     app.ClientCollection = new Collection();
+
     app.ServerCollection = new Collection();
     app.ServerCollection.url = '/bookmarks/';
 
@@ -35,7 +36,6 @@ var app = app || {};
     app.TagCollection = new TagCollection();
     app.ServerCollection.bind('sync remove', function () {
         _.each(app.ServerCollection.models, function (model) {
-
             try {
                 _.forEach(model.get('tags').split(','), function (tag) {
                     app.TagCollection.add({tag: tag});

@@ -8,6 +8,93 @@ var app = app || {};
     'use strict';
 
     /**
+     * La vue pour le login, logout et l'option d'effacement de tous les bookmarks
+     */
+
+    var reload = _.extend({}, Backbone.Events);
+
+    app.HomeView = Backbone.View.extend({
+        el: '.user-info',
+
+        userData: $('.user-data'),
+
+        username: $('#username'),
+
+        userLabel: $('#user-name-label'),
+
+        logoutButton: $('.logout-btn'),
+
+        initialize: function () {
+
+            this.viewTag = new app.ViewByTag({});
+
+            if (this.check())
+                this.hideUserForm();
+            else {
+                this.showUserForm();
+                this.show();
+            }
+        },
+
+        events: {
+            'click .login-btn': 'login',
+            'click .logout-btn': 'logout',
+            'click .clean-btn': 'clean'
+        },
+
+        hide: function () {
+            console.debug("hide");
+            this.hideUserForm();
+            this.viewTag.hide();
+        },
+
+        show: function () {
+            console.debug("show");
+            this.$el.css('display', 'block');
+        },
+
+        hideUserForm: function () {
+            console.debug("hideUserForm");
+            this.userData.css('display', 'none');
+            this.logoutButton.css('display', 'inline');
+            this.userLabel.html('Welcome ' + sessionStorage.getItem('user') + '!');
+        },
+
+        showUserForm: function () {
+            console.debug("showUserForm");
+            this.userData.css('display', 'inline');
+            this.logoutButton.css('display', 'none');
+            this.userLabel.html('');
+        },
+
+        login: function () {
+            sessionStorage.setItem('user', this.username.val());
+            this.hideUserForm();
+        },
+
+        logout: function () {
+            this.showUserForm();
+            sessionStorage.clear();
+            app.appRouter.navigate('');
+        },
+
+        check: function () {
+            return sessionStorage.getItem('user') != null;
+        },
+
+        clean: function () {
+            localStorage.clear();
+            app.ClientCollection.reset();
+
+            _.each(_.clone(app.ServerCollection.models), function (model) {
+                model.destroy();
+            }, this);
+
+            reload.trigger('reload-tag-view');
+        }
+    });
+
+    /**
      * La vue pour le formulaire du côté client, pour l'ajouter dans la collection
      * de bookmarks.
      */
@@ -25,11 +112,13 @@ var app = app || {};
                     app.TagCollection.add(tag);
                 }, this);
 
-                app.ClientCollection.add({
+                var model = {
                     title: this.title.val(),
                     url: this.url.val(),
                     tags: this.tags.val()
-                });
+                };
+                app.ClientCollection.add(model);
+                app.AddEvent.trigger('client-add', model);
 
                 if (app.DEBUG) {
                     console.debug("DEBUG: Site added client side.");
@@ -37,7 +126,7 @@ var app = app || {};
 
             }
 
-            $('#myModal1').modal('hide');
+            $('#clientModal').modal('hide');
             this.reset();
         },
 
@@ -72,6 +161,7 @@ var app = app || {};
             this.$el.empty();
 
             _.each(this.collection.models, function (model) {
+                console.debug(model);
                 this.$el.append(this.template(model.toJSON()));
             }, this);
         }
@@ -119,7 +209,7 @@ var app = app || {};
 
             var site = app.ClientCollection.findWhere({title: title, url: url});
             app.ClientCollection.remove(site);
-
+            app.AddEvent.trigger('client-remove', title);
 
             if (app.DEBUG) {
                 console.debug("DEBUG: Site removed client side.");
@@ -140,9 +230,9 @@ var app = app || {};
                 console.debug("DEBUG: Form server initialized.");
             }
 
-            this.title = $('#key-serveur');
-            this.url = $('#value-serveur');
-            this.tags = $('#tags-serveur');
+            this.title = $('#key-server');
+            this.url = $('#value-server');
+            this.tags = $('#tags-server');
             this.render(e);
         },
 
@@ -152,19 +242,21 @@ var app = app || {};
                     app.TagCollection.add(tag);
                 }, this);
 
-                app.ServerCollection.create({
+                var model = {
                     title: this.title.val(),
                     url: this.url.val(),
                     tags: this.tags.val()
-                }, {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+                };
+                app.ServerCollection.create(model,
+                    {url: '/bookmarks/', method: 'POST', emulateJSON: true});
 
+                app.AddEvent.trigger('server-add', model);
                 if (app.DEBUG) {
                     console.debug("DEBUG: Site added server side.");
                 }
-
             }
 
-            $('#myModal').modal('hide');
+            $('#serverModal').modal('hide');
 
             this.reset();
         },
@@ -251,6 +343,7 @@ var app = app || {};
             var url = $(ev.currentTarget).attr('data-url');
 
             app.ServerCollection.findWhere({title: title, url: url}).destroy();
+            app.AddEvent.trigger('server-add', title);
 
             if (app.DEBUG) {
                 console.debug("DEBUG: Site removed server side.");
@@ -283,6 +376,9 @@ var app = app || {};
             app.ServerCollection.fetch({success: function () {
                 self.show(options.selectTag)
             }});
+
+            reload.bind('reload-tag-view', this.render, this);
+
         },
 
         hide: function () {
@@ -295,6 +391,7 @@ var app = app || {};
         },
 
         render: function (tag) {
+
             var self = this;
             self.table.empty();
 
@@ -346,7 +443,7 @@ var app = app || {};
 
         events: {
             'click .search-button': 'searchTag',
-            'click .search-tag': 'listTag'
+            'click .search-btn': 'listTag'
         },
 
         searchTag: function () {

@@ -84,14 +84,3 @@ app.delete('/bookmarks/:id', function (req, res) {
     Bookmark.remove(req.params.id);
     res.status(204).send();
 });
-
-
-
-/*
- Pour les test
- var server = app.listen(8081, function () {
- var host = server.address().address;
- var port = server.address().port;
-
- console.log("Serveur en écoutant dans http://%s:%s ...", host, port)
- });*/

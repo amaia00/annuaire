@@ -19,11 +19,30 @@ var app = app || {};
         },
 
         routes: {
-            '': 'server',
+            '': 'home',
             'server': 'server',
             'client': 'client',
             'tag': 'tag',
             'tag/:param': 'tag'
+        },
+
+        home: function () {
+            if (app.DEBUG) {
+                console.debug("DEBUG: Route to home view.");
+            }
+
+            //this.loadView(new app.ViewByTag({}));
+            this.loadView(new app.HomeView());
+
+            $('#accueil-view').parent().addClass('active');
+            $('#client-view').parent().removeClass('active');
+            $('#server-view').parent().removeClass('active');
+            $('#tag-view').parent().removeClass('active');
+
+            $('.user-info').css("display", "block");
+            $(".content-client").css("display", "none");
+            $(".content-server").css("display", "none");
+
         },
 
         server: function () {
@@ -34,10 +53,12 @@ var app = app || {};
 
             this.loadView(new app.ServerView());
 
+            $('#accueil-view').parent().removeClass('active');
             $('#client-view').parent().removeClass('active');
             $('#server-view').parent().addClass('active');
             $('#tag-view').parent().removeClass('active');
 
+            //$(".content-server").css("display", "block");
             $(".content-client").css("display", "none");
             $(".content-tags").css("display", "none");
         },
@@ -50,6 +71,7 @@ var app = app || {};
 
             this.loadView(new app.ClientView());
 
+            $('#accueil-view').parent().removeClass('active');
             $('#server-view').parent().removeClass('active');
             $('#client-view').parent().addClass('active');
             $('#tag-view').parent().removeClass('active');
@@ -69,10 +91,12 @@ var app = app || {};
             else
                 this.loadView(new app.ViewByTag({}));
 
+            $('#accueil-view').parent().removeClass('active');
             $('#server-view').parent().removeClass('active');
             $('#client-view').parent().removeClass('active');
             $('#tag-view').parent().addClass('active');
 
+            $('.user-info').css("display", "none");
             $(".content-server").css("display", "none");
             $(".content-client").css("display", "none");
         },
