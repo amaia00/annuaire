@@ -69,10 +69,13 @@ html, body {
 .body_site {
     height: calc(100% - 267px);
 }
-.content-server, .content-client, .content-tags {
+.content-server, .content-client, .content-tags, .content-home {
     background: #fff;
     margin: 20px 0;
     border-radius: 10px;
+}
+.hidden {
+    visibility: hidden;
 }
 .body_site h4 , h4{
     margin: 20px;

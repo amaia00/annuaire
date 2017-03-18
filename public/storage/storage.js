@@ -105,7 +105,6 @@ var app = app || {};
         });
 
         app.ClientCollection.on('add', function (e) {
-            console.debug("add EVENT CLIENT COLLECTION");
             if (e.attributes.titre != '' && typeof e.attributes.title != 'undefined') {
                 localStorage.setItem(e.attributes.title, JSON.stringify(e.attributes));
 
@@ -113,7 +112,6 @@ var app = app || {};
         }, this);
 
         app.ClientCollection.on('remove', function (e) {
-            console.debug("remove EVENT CLIENT COLLECTION");
             localStorage.removeItem(e.attributes.title);
 
         }, this);
@@ -122,6 +120,7 @@ var app = app || {};
             if (sessionStorage.getItem('user')) {
                 var date = new Date();
                 sessionStorage.setItem('_cache_last_bookmark_client', JSON.stringify(model));
+                sessionStorage.setItem('_cache_last_modification', date);
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
                 if (history.length == 5)
@@ -136,7 +135,7 @@ var app = app || {};
 
             if (sessionStorage.getItem('user')) {
                 var date = new Date();
-                sessionStorage.setItem('_cache_last_modification', new Date());
+                sessionStorage.setItem('_cache_last_modification', date);
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
 
@@ -151,6 +150,7 @@ var app = app || {};
         app.AddEvent.on('server-add', function (model) {
             if (sessionStorage.getItem('user')) {
                 var date = new Date();
+                sessionStorage.setItem('_cache_last_modification', date);
                 sessionStorage.setItem('_cache_last_bookmark_server', JSON.stringify(model));
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
@@ -162,12 +162,22 @@ var app = app || {};
                 sessionStorage.setItem('_cache_last_five_changes', JSON.stringify(history));
             }
         });
+        
+        app.AddEvent.on('clean-all', function () {
+            var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
+
+            if (history.length == 5)
+                history.shift();
+
+            history.push({'date': new Date(), 'action': 'Tous les bookmarks ont été suprimés'});
+            sessionStorage.setItem('_cache_last_five_changes', JSON.stringify(history));
+        });
 
         app.AddEvent.on('server-remove', function (title) {
 
             if (sessionStorage.getItem('user')) {
                 var date = new Date();
-                sessionStorage.setItem('_cache_last_modification', new Date());
+                sessionStorage.setItem('_cache_last_modification', date);
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
 
@@ -178,12 +188,6 @@ var app = app || {};
                 sessionStorage.setItem('_cache_last_five_changes', JSON.stringify(history));
             }
         });
-        
-        app.ServerCollection.on('add', function (e) {
-
-            console.debug("add EVENT SERVER COLLECTION");
-            console.debug(e);
-        }, this);
 
         var all_bookmarks = [];
 

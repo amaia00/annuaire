@@ -15,11 +15,13 @@ var app = app || {};
         initialize: function () {
             if (app.DEBUG) {
                 console.debug("DEBUG: Initializing application... ");
+                app.ServerCollection.fetch();
             }
         },
 
         routes: {
             '': 'home',
+            '#': 'home',
             'server': 'server',
             'client': 'client',
             'tag': 'tag',
@@ -31,7 +33,6 @@ var app = app || {};
                 console.debug("DEBUG: Route to home view.");
             }
 
-            //this.loadView(new app.ViewByTag({}));
             this.loadView(new app.HomeView());
 
             $('#accueil-view').parent().addClass('active');
@@ -42,6 +43,7 @@ var app = app || {};
             $('.user-info').css("display", "block");
             $(".content-client").css("display", "none");
             $(".content-server").css("display", "none");
+            $(".content-tags").css("display", "none");
 
         },
 
@@ -58,7 +60,7 @@ var app = app || {};
             $('#server-view').parent().addClass('active');
             $('#tag-view').parent().removeClass('active');
 
-            //$(".content-server").css("display", "block");
+            $(".content-home").css("display", "none");
             $(".content-client").css("display", "none");
             $(".content-tags").css("display", "none");
         },
@@ -76,6 +78,7 @@ var app = app || {};
             $('#client-view').parent().addClass('active');
             $('#tag-view').parent().removeClass('active');
 
+            $(".content-home").css("display", "none");
             $(".content-server").css("display", "none");
             $(".content-tags").css("display", "none");
         },
@@ -97,6 +100,7 @@ var app = app || {};
             $('#tag-view').parent().addClass('active');
 
             $('.user-info').css("display", "none");
+            $(".content-home").css("display", "none");
             $(".content-server").css("display", "none");
             $(".content-client").css("display", "none");
         },
@@ -107,8 +111,9 @@ var app = app || {};
         }
     });
 
-    app.appRouter = new AppRouter();
     app.DEBUG = false;
+    app.appRouter = new AppRouter();
+
 
     /**
      * On active l'option pour la gestion de l'historial du navigateur

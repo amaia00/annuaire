@@ -14,7 +14,11 @@ var app = app || {};
     var reload = _.extend({}, Backbone.Events);
 
     app.HomeView = Backbone.View.extend({
-        el: '.user-info',
+        el: '.content-home',
+
+        historyTemplate: _.template($('#home-history-template').html()),
+
+        bookmarksTemplate : _.template($('#home-bookmarks-template').html()),
 
         userData: $('.user-data'),
 
@@ -24,15 +28,17 @@ var app = app || {};
 
         logoutButton: $('.logout-btn'),
 
+        lastMofication: $('#last_modification'),
+
         initialize: function () {
+            this.show();
 
-            this.viewTag = new app.ViewByTag({});
-
-            if (this.check())
+            if (this.activeSession()) {
                 this.hideUserForm();
-            else {
+                this.render();
+            } else {
                 this.showUserForm();
-                this.show();
+
             }
         },
 
@@ -43,28 +49,35 @@ var app = app || {};
         },
 
         hide: function () {
-            console.debug("hide");
             this.hideUserForm();
-            this.viewTag.hide();
+            this.$el.css('display', 'none');
         },
 
         show: function () {
-            console.debug("show");
             this.$el.css('display', 'block');
         },
 
         hideUserForm: function () {
-            console.debug("hideUserForm");
+
             this.userData.css('display', 'none');
             this.logoutButton.css('display', 'inline');
+
+            if (sessionStorage.getItem('_cache_last_modification') != null ){
+                this.lastMofication.css('display', 'inline');
+                this.lastMofication.html("Dernière modification: " +
+                    sessionStorage.getItem('_cache_last_modification'));
+            } else
+                this.lastMofication.css('display', 'none');
+
             this.userLabel.html('Welcome ' + sessionStorage.getItem('user') + '!');
         },
 
         showUserForm: function () {
-            console.debug("showUserForm");
+
             this.userData.css('display', 'inline');
             this.logoutButton.css('display', 'none');
             this.userLabel.html('');
+            $('#last_modification').css('display', 'none');
         },
 
         login: function () {
@@ -72,14 +85,55 @@ var app = app || {};
             this.hideUserForm();
         },
 
-        logout: function () {
-            this.showUserForm();
-            sessionStorage.clear();
-            app.appRouter.navigate('');
+        render: function () {
+
+            var historySelector = $('.history');
+            historySelector.empty();
+
+            if (sessionStorage.getItem('_cache_last_five_changes') != null) {
+                $('#activity_history').removeClass('hidden');
+
+                var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes'));
+                historySelector.append(this.historyTemplate({history: history}));
+            }
+
+            var bookmarkSelector = $('.bookmarks');
+            bookmarkSelector.empty();
+
+            if (sessionStorage.getItem('_cache_last_bookmark_client') != null) {
+                $('#last_bookmarks').removeClass('hidden');
+                var bookmark_client = JSON.parse(sessionStorage.getItem('_cache_last_bookmark_client')) || {};
+                bookmark_client.cote = 'Client';
+
+                bookmarkSelector.append(this.bookmarksTemplate({bookmarks: [bookmark_client]}));
+            }
+
+            if (sessionStorage.getItem('_cache_last_bookmark_server') != null) {
+                $('#last_bookmarks').removeClass('hidden');
+                var bookmark_server = JSON.parse(sessionStorage.getItem('_cache_last_bookmark_server')) || {};
+                bookmark_server.cote = 'Serveur';
+
+                bookmarkSelector.append(this.bookmarksTemplate({bookmarks: [bookmark_server]}));
+            }
+
+
         },
 
-        check: function () {
-            return sessionStorage.getItem('user') != null;
+        logout: function () {
+            $('#activity_history').addClass('hidden');
+            $('#last_bookmarks').addClass('hidden');
+
+            this.showUserForm();
+
+            sessionStorage.clear();
+            this.render();
+        },
+
+        activeSession: function () {
+            if (typeof (Storage) !== 'undefined') {
+                return sessionStorage.getItem('user') != null;
+            }
+            return false;
         },
 
         clean: function () {
@@ -90,6 +144,7 @@ var app = app || {};
                 model.destroy();
             }, this);
 
+            app.AddEvent.trigger('clean-all');
             reload.trigger('reload-tag-view');
         }
     });
@@ -161,7 +216,6 @@ var app = app || {};
             this.$el.empty();
 
             _.each(this.collection.models, function (model) {
-                console.debug(model);
                 this.$el.append(this.template(model.toJSON()));
             }, this);
         }
@@ -287,7 +341,7 @@ var app = app || {};
             }
 
             _.bindAll(this, "render");
-            this.collection.bind('sync remove', this.render);
+            app.ServerCollection.bind('sync remove', this.render);
             app.ServerCollection.fetch();
         },
 
@@ -298,7 +352,7 @@ var app = app || {};
 
             this.$el.empty();
 
-            _.each(this.collection.models, function (model) {
+            _.each(app.ServerCollection.models, function (model) {
                 if (typeof (model.get('tags')) !== 'object')
                     this.$el.append(this.template(model.toJSON()));
             }, this);
@@ -343,7 +397,7 @@ var app = app || {};
             var url = $(ev.currentTarget).attr('data-url');
 
             app.ServerCollection.findWhere({title: title, url: url}).destroy();
-            app.AddEvent.trigger('server-add', title);
+            app.AddEvent.trigger('server-remove', title);
 
             if (app.DEBUG) {
                 console.debug("DEBUG: Site removed server side.");
@@ -427,7 +481,8 @@ var app = app || {};
 
             this.$el.empty();
             _.each(app.TagCollection.models, function (model) {
-                this.$el.append(this.template(model.toJSON()));
+                if (model.toJSON() != '')
+                    this.$el.append(this.template(model.toJSON()));
             }, this);
         }
     });
