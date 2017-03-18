@@ -2,16 +2,6 @@
  * Created by amaia.nazabal on 3/16/17.
  */
 
-
-/*
- * QuotaExceededError:
- * If it couldn't set the new value, the method must throw a QuotaExceededError exception. (Setting could fail if, e.g.,
- * the user has disabled storage for the site, or if the quota has been exceeded.)
- *
- *
- * The user agent may throw a SecurityError exception and abort these steps instead of returning a Storage object if the
- * request violates a policy decision (e.g. if the user agent is configured to not allow the page to persist data).
- * */
 var app = app || {};
 
 (function ($) {
