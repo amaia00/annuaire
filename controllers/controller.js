@@ -7,20 +7,28 @@ var Bookmark = require('../shared/annuaire.js');
 var app = module.exports = express();
 
 /**
- * Définition de resources statiques dans le dossier public
+ * Définition de ressources statiques dans le dossier public
  */
 app.use(express.static(__dirname + path.sep + '../public'));
+//app.use('public/js/bootstrap.js', express.static(__dirname + '/node_modules/bootstrap/dist/js/bootstrap.js')); // redirect bootstrap JS
+/*app.use(__dirname + path.sep + '../public/js', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
+*/
+app.use('/jquery',  express.static( path.join(__dirname, '../node_modules/jquery/dist')));
+app.use('/bootstrap-js',  express.static( path.join(__dirname, '../node_modules/bootstrap/dist/js')));
+app.use('/bootstrap-css',  express.static( path.join(__dirname, '../node_modules/bootstrap/dist/css')));
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 /* Controller */
 
 
 app.get('/', function(req, res){
+
     res.sendFile(path.resolve('public/index.html'));
 });
 
 app.get('/tag.js', function(req, res) {
     res.sendFile(path.resolve('shared/tag.js'));
+
 });
 
 /* CRUD methodes */
@@ -84,3 +92,4 @@ app.delete('/bookmarks/:id', function (req, res) {
     Bookmark.remove(req.params.id);
     res.status(204).send();
 });
+
