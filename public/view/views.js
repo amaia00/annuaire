@@ -518,4 +518,4 @@ var app = app || {};
     app.TagForm = new TagForm();
 
 
-})(jQuery);
+}(jQuery));

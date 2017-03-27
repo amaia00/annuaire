@@ -3,6 +3,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var Tag = require('../shared/tag.js');
 var Bookmark = require('../shared/annuaire.js');
+var less = require('less');
 
 var app = module.exports = express();
 
