@@ -8,11 +8,7 @@ module.exports = function(grunt) {
 				}
 			}	
 		},
-
-
-
-
-		jshint: {
+        jshint: {
 			files: ['Gruntfile.js', 'controllers/controller.js', 'shared/annuaire.js'],
 			options: {
 				globals: {
@@ -23,11 +19,12 @@ module.exports = function(grunt) {
         less: {
             development: {
                 options: {
-                    paths: ["./public/less"],
+                    paths: ["public/less"],
                     yuicompress: true
                 },
                 files: {
-                    "public/style/style.css": "./public/less/style.less"
+                    "public/style/style.css": "public/less/style.less",
+                    "public/style/print.css" : "public/less/print.less"
                 }
             }
         },

@@ -109,14 +109,18 @@ var app = app || {};
         app.AddEvent.on('client-add', function (model) {
             if (sessionStorage.getItem('user')) {
                 var date = new Date();
+                var datestring ="<div class='date'>Le <span class='date_date'>"+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + "</span>à  <span class='heure'>"+
+                    date.getHours() + ":" + date.getMinutes()+"</span>";
+                var datehistory = "Le "+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + " "+
+                    date.getHours() + ":" + date.getMinutes()+"";
                 sessionStorage.setItem('_cache_last_bookmark_client', JSON.stringify(model));
-                sessionStorage.setItem('_cache_last_modification', date);
+                sessionStorage.setItem('_cache_last_modification', datestring);
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
                 if (history.length == 5)
                     history.shift();
 
-                history.push({'date': date, 'action': 'Nouveau bookmark ajouté côté client: ' + model.title});
+                history.push({'date': datehistory, 'action': 'Nouveau bookmark ajouté côté client: ' + model.title});
                 sessionStorage.setItem('_cache_last_five_changes', JSON.stringify(history));
             }
         });
@@ -125,14 +129,18 @@ var app = app || {};
 
             if (sessionStorage.getItem('user')) {
                 var date = new Date();
-                sessionStorage.setItem('_cache_last_modification', date);
+                var datestring ="<div class='date'>Le <span class='date_date'>"+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + "</span>à  <span class='heure'>"+
+                    date.getHours() + ":" + date.getMinutes()+"</span>";
+                var datehistory = "Le "+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + " "+
+                    date.getHours() + ":" + date.getMinutes()+"";
+                sessionStorage.setItem('_cache_last_modification', datestring);
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
 
                 if (history.length == 5)
                     history.shift();
 
-                history.push({'date': date, 'action': 'Bookmark suprimé côté client: ' + title});
+                history.push({'date': datehistory, 'action': 'Bookmark suprimé côté client: ' + title});
                 sessionStorage.setItem('_cache_last_five_changes', JSON.stringify(history));
             }
         });
@@ -140,7 +148,11 @@ var app = app || {};
         app.AddEvent.on('server-add', function (model) {
             if (sessionStorage.getItem('user')) {
                 var date = new Date();
-                sessionStorage.setItem('_cache_last_modification', date);
+                var datestring ="<div class='date'>Le <span class='date_date'>"+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + "</span>à  <span class='heure'>"+
+                    date.getHours() + ":" + date.getMinutes()+"</span>";
+                var datehistory = "Le "+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + " "+
+                    date.getHours() + ":" + date.getMinutes()+"";
+                sessionStorage.setItem('_cache_last_modification', datestring);
                 sessionStorage.setItem('_cache_last_bookmark_server', JSON.stringify(model));
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
@@ -148,18 +160,21 @@ var app = app || {};
                 if (history.length == 5)
                     history.shift();
 
-                history.push({'date': date, 'action': 'Nouveau bookmark ajouté côté serveur: ' + model.title});
+                history.push({'date': datehistory, 'action': 'Nouveau bookmark ajouté côté serveur: ' + model.title});
                 sessionStorage.setItem('_cache_last_five_changes', JSON.stringify(history));
             }
         });
         
         app.AddEvent.on('clean-all', function () {
             var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
+            var date = new Date();
+            var datehistory = "Le "+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + " "+
+                date.getHours() + ":" + date.getMinutes()+"";
 
             if (history.length == 5)
                 history.shift();
 
-            history.push({'date': new Date(), 'action': 'Tous les bookmarks ont été suprimés'});
+            history.push({'date': datehistory, 'action': 'Tous les bookmarks ont été suprimés'});
             sessionStorage.setItem('_cache_last_five_changes', JSON.stringify(history));
         });
 
@@ -167,14 +182,18 @@ var app = app || {};
 
             if (sessionStorage.getItem('user')) {
                 var date = new Date();
-                sessionStorage.setItem('_cache_last_modification', date);
+                var datestring ="<div class='date'>Le <span class='date_date'>"+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + "</span>à  <span class='heure'>"+
+                    date.getHours() + ":" + date.getMinutes()+"</span>";
+                var datehistory = "Le "+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + " "+
+                    date.getHours() + ":" + date.getMinutes()+"";
+                sessionStorage.setItem('_cache_last_modification', datestring);
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
 
                 if (history.length == 5)
                     history.shift();
 
-                history.push({'date': date, 'action': 'Bookmark suprimé côté serveur: ' + title});
+                history.push({'date': datehistory, 'action': 'Bookmark suprimé côté serveur: ' + title});
                 sessionStorage.setItem('_cache_last_five_changes', JSON.stringify(history));
             }
         });

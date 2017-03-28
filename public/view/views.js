@@ -7,11 +7,40 @@ var app = app || {};
 (function ($) {
     'use strict';
 
+    /**** to print ******/
+
     /**
      * La vue pour le login, logout et l'option d'effacement de tous les bookmarks
      */
 
     var reload = _.extend({}, Backbone.Events);
+
+    /*var appImpression= Backbone.View.extend({
+         el: $(".content-server"),
+
+            events: {
+                'click  #impression_serveur': 'impression',
+
+            },
+        impression: function () {
+            if(app.ServerCollection.length===0) {
+                $(".content-server").append("<div class='message'> Vous n'avez pas de sites à imprimer");
+                $("#pairs-server").css("display","none");
+                window.print();
+            }
+            else {
+
+                $(".content-server .message").css('display','none');
+                $("#pairs-server").css("display","block");
+                window.print();
+            }
+        }
+
+
+        }
+
+    );
+    var appImpression = new appImpression();*/
 
     app.HomeView = Backbone.View.extend({
         el: '.content-home',
@@ -60,24 +89,26 @@ var app = app || {};
         hideUserForm: function () {
 
             this.userData.css('display', 'none');
-            this.logoutButton.css('display', 'inline');
+            this.logoutButton.css('display', 'block');
 
             if (sessionStorage.getItem('_cache_last_modification') != null ){
-                this.lastMofication.css('display', 'inline');
+                this.lastMofication.css('display', 'block');
                 this.lastMofication.html("Dernière modification: " +
                     sessionStorage.getItem('_cache_last_modification'));
             } else
                 this.lastMofication.css('display', 'none');
 
             this.userLabel.html('Welcome ' + sessionStorage.getItem('user') + '!');
+            this.userLabel.addClass("name");
         },
 
         showUserForm: function () {
 
-            this.userData.css('display', 'inline');
+            this.userData.css('display', 'block');
             this.logoutButton.css('display', 'none');
             this.userLabel.html('');
             $('#last_modification').css('display', 'none');
+            this.userLabel.removeClass("name");
         },
 
         login: function () {
@@ -158,6 +189,7 @@ var app = app || {};
             this.title = $('#key-client');
             this.url = $('#value-client');
             this.tags = $('#tags-client');
+            console.log(this.tags);
             this.render(e)
         },
 
@@ -172,7 +204,10 @@ var app = app || {};
                     url: this.url.val(),
                     tags: this.tags.val()
                 };
+                //console.log( this.tags.val()+"tags")
                 app.ClientCollection.add(model);
+                //console.log(app.ClientCollection);
+
                 app.AddEvent.trigger('client-add', model);
 
                 if (app.DEBUG) {
@@ -280,6 +315,8 @@ var app = app || {};
      */
     var FormServer = Backbone.View.extend({
         initialize: function (e) {
+            $("#pairs-server").css('display','block');
+            $(".message").css('display','none');
             if (app.DEBUG) {
                 console.debug("DEBUG: Form server initialized.");
             }
@@ -371,7 +408,8 @@ var app = app || {};
 
         events: {
             'click .add-site': 'addSite',
-            'click .remove-site': 'removeSite'
+            'click .remove-site': 'removeSite',
+            'click  #impression_serveur': 'impression'
         },
 
         initialize: function () {
@@ -412,6 +450,20 @@ var app = app || {};
         show: function () {
             this.$el.css('display', 'block');
             new ServerViewList({collection: app.ServerCollection});
+        },
+        impression: function () {
+            if(app.ServerCollection.length===0) {
+                $(".content-server .message").css("display","block");
+                $(".content-server .message").html(" Vous n'avez pas de sites à imprimer");
+                $("#pairs-server").css("display","none");
+                window.print();
+            }
+            else {
+
+                $(".content-server .message").css('display','none');
+                $("#pairs-server").css("display","block");
+                window.print();
+            }
         }
     });
 
@@ -481,6 +533,7 @@ var app = app || {};
 
             this.$el.empty();
             _.each(app.TagCollection.models, function (model) {
+                console.log(model.toJSON());
                 if (model.toJSON() != '')
                     this.$el.append(this.template(model.toJSON()));
             }, this);

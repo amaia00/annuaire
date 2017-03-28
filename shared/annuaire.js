@@ -67,6 +67,15 @@ Annuaire.prototype.bind = function(key, value, tags) {
 Annuaire.prototype.remove = function(key) {
     delete this.collection[key];
 };
+Annuaire.prototype.empty= function () {
+    if(this.collection===null) {
+        return true;
+    }
+    else {
+        return false;
+    }
+
+};
 
 try {
     module.exports = new Annuaire();

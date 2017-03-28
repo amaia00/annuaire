@@ -5,9 +5,10 @@
     <!-- Latest compiled and minified CSS -->
   <!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
-    <link href="style/style.css" rel="stylesheet"/>
+    <link href="/style/style.css" rel="stylesheet"/>
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
     <link href="style/bootstrap-tagsinput.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/style/print.css" type="text/css" media="print" />
     <link href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet">
     <script src="/jquery/jquery.js"></script>
     <link rel="stylesheet" href="/bootstrap-css/bootstrap.min.css">
@@ -84,23 +85,25 @@
                                     <span class="input-group-addon user-data" id="basic-addon7">
                                         <i class="fa fa-user" aria-hidden="true"></i>
                                     </span>
+
                                     <input autofocus="autofocus" id="username" type="text"
-                                           class="form-control medium user-data">
+                                           class="form-control medium user-data" style="width: 70% !important; " >
+                                    <div class="btn_footer">
+                                        <button type="button" class="btn login-btn user-data">
+                                            <label>Login</label>
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </button>
 
-                                    <button type="button" class="btn login-btn user-data">
-                                        <label>Login</label>
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                    </button>
+                                        <button type="button" class="btn logout-btn">
+                                            <label>Logout</label>
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </button>
 
-                                    <button type="button" class="btn logout-btn">
-                                        <label>Logout</label>
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                    </button>
-
-                                    <button type="button" class="btn clean-btn">
-                                        <label>Effacer storage</label>
-                                        <i class="fa fa-eraser" aria-hidden="true"></i>
-                                    </button>
+                                        <button type="button" class="btn clean-btn">
+                                            <label>Effacer storage</label>
+                                            <i class="fa fa-eraser" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
 
                                     <label id="last_modification" class="medium rigth">Dernière modification: </label>
                                 </div>
@@ -111,7 +114,7 @@
                 <div class="col-md-6">
                     <div class="input-group medium">
 
-                        <h3 id="activity_history" class="hidden">Dernières activités</h3>
+                        <h4 id="activity_history" class="hidden">Dernières activités</h4>
 
                         <div class="history">
                             <script type="text/template" id="home-history-template">
@@ -128,7 +131,7 @@
                 <div class="col-md-6">
                     <div class="input-group medium">
 
-                        <h3 id="last_bookmarks" class="hidden">Dernières bookmarks ajoutés</h3>
+                        <h4 id="last_bookmarks" class="hidden">Dernières bookmarks ajoutés</h4>
 
                         <div class="bookmarks list-group">
                             <ul class="list-group">
@@ -142,7 +145,7 @@
                                             Tags:
 
                                             <% _.each(bookmark.tags.split(','), function(tag) { %>
-                                                <a href="#/tag/<%=tag.trim()%>"><%=tag%></a>
+                                                <a href="#/tag/<%=tag.trim()%>" class="tag"><%=tag%></a>
                                             <%}) %>
                                         </p>
                                     </li>
@@ -249,6 +252,12 @@
                         </script>
                         </tbody>
                     </table>
+                    <form>
+                          <button id="impression_serveur" name="impression" type="button"   class ="btn plus_btn">
+                        Imprimer cette liste <i class="fa fa-print" aria-hidden="true"></i>
+                    </button>
+                        <div  class='alert alert-danger message' role='alert'></div>
+                    </form>
                 </div>
             </div>
         </section>
@@ -342,6 +351,9 @@
                         </script>
                         </tbody>
                     </table>
+                    <form>
+                          <input id="impression_client" name="impression" type="button"  value="Imprimer cette page" />
+                    </form>
                 </div>
             </div>
         </section>
