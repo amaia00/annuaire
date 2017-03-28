@@ -34,10 +34,10 @@ module.exports = function(grunt) {
         }
 	});
 
-	grunt.registerTask('build', ['jshint', 'express', 'express-keepalive']);
+	grunt.registerTask('build', ['jshint', 'express', 'express-keepalive', 'less']);
 	grunt.loadNpmTasks('grunt-express');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.registerTask('default', 'less');
+
 };
