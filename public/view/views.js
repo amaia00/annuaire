@@ -259,6 +259,7 @@ var app = app || {};
 
         hide: function () {
             this.$el.css('display', 'none');
+            this.undelegateEvents();
         },
 
         show: function () {
@@ -451,6 +452,7 @@ var app = app || {};
 
         hide: function () {
             this.$el.css('display', 'none');
+            this.undelegateEvents();
         },
 
         show: function () {
