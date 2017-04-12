@@ -2,9 +2,6 @@
 <html lang="fr">
 <head>
     <title>Annuaire M1IF13</title>
-    <!-- Latest compiled and minified CSS -->
-    <!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
     <link href="/style/style.css" rel="stylesheet"/>
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
     <link href="style/bootstrap-tagsinput.css" rel="stylesheet"/>
@@ -15,12 +12,6 @@
     <script src="/bootstrap-js/bootstrap.js"></script>
 </head>
 
-<!-- TODO: -->
-<!-- We have to add the check for the empty's inputs when we want to add a site -->
-<!-- Autofocus in the modals -->
-<!-- Pagination -->
-<!-- Problems with the background when we have a lot of data-->
-<!-- Install bootstrap with npm -->
 <body>
 <div class="container">
     <div class="header">
@@ -67,8 +58,6 @@
     </nav>
 </div>
 
-</div>
-</div>
 <div class="body_site">
     <div class="container">
         <div class="error-section"></div>
@@ -358,6 +347,7 @@
             </div>
         </section>
 
+        <!-- Modal de Tags-->
         <section class="content-tags">
             <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
                 <div class="modal-dialog" role="document">
@@ -435,14 +425,13 @@
     </div>
 </div>
 
-<!--<script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>-->
+<!-- Scripts ressources externes -->
 <script src="http://underscorejs.org/underscore-min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.3/underscore.string.min.js"></script>
 <script src="http://backbonejs.org/backbone-min.js"></script>
-<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>-->
 <script src="style/bootstrap-tagsinput.min.js"></script>
+
+<!-- Scripts ressources internes - backbone -->
 <script src="model/modele.js"></script>
 <script src="collection/collection.js"></script>
 <script src="view/views.js"></script>

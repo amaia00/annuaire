@@ -27,7 +27,8 @@ var app = app || {};
     });
 
     /**
-     * Le model pour les tags
+     * Le model pour la collection de tags, l'identificateur est le tag, alors, ne pourra pas avoir
+     * deux tags avec le même nom
      */
     app.Tag = Backbone.Model.extend({
         defaults: {

@@ -1,4 +1,4 @@
-# TP Annuaire
+# TP1 Annuaire
 
 ### Objectifs pédagogiques du TP
 
@@ -55,6 +55,8 @@ npm install express
 npm install jquery --save
 
 npm install bootstrap --save
+
+npm install grunt-contrib-less --save-dev
 
 grunt build
 ```

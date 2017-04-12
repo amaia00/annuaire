@@ -9,6 +9,15 @@ var app = app || {};
     'use strict';
 
     /**
+     *
+     * @type {Function}
+     */
+    var consoleDebug = (function (msg) {
+        if (app.DEBUG)
+            console.debug(msg)
+    });
+
+    /**
      * Le router pour la gestion des urls côté client
      */
     var AppRouter = Backbone.Router.extend({
@@ -29,9 +38,7 @@ var app = app || {};
         },
 
         home: function () {
-            if (app.DEBUG) {
-                console.debug("DEBUG: Route to home view.");
-            }
+            consoleDebug("DEBUG: Route to home view.");
 
             this.loadView(new app.HomeView());
 
@@ -48,10 +55,7 @@ var app = app || {};
         },
 
         server: function () {
-
-            if (app.DEBUG) {
-                console.debug("DEBUG: Route to server view.");
-            }
+            consoleDebug("DEBUG: Route to server view.");
 
             this.loadView(new app.ServerView());
 
@@ -66,11 +70,7 @@ var app = app || {};
         },
 
         client: function () {
-
-            if (app.DEBUG) {
-                console.debug("DEBUG: Route to client view.");
-            }
-
+            consoleDebug("DEBUG: Route to client view.");
             this.loadView(new app.ClientView());
 
             $('#accueil-view').parent().removeClass('active');
@@ -84,12 +84,9 @@ var app = app || {};
         },
 
         tag: function (param) {
+            consoleDebug("DEBUG: Route to tag view. " +  param);
 
-            if (app.DEBUG) {
-                console.debug("DEBUG: Route to tag view.", param);
-            }
-
-            if (typeof param !== 'undefined' && param != null)
+            if (typeof param !== 'undefined' && param !== null)
                 this.loadView(new app.ViewByTag({selectTag: param}));
             else
                 this.loadView(new app.ViewByTag({}));
@@ -120,9 +117,6 @@ var app = app || {};
      */
     Backbone.history.start();
 
-
-    if (app.DEBUG) {
-        console.debug("DEBUG: History app initialized.");
-    }
+    consoleDebug("DEBUG: History app initialized.");
 
 })(jQuery);

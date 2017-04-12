@@ -7,29 +7,19 @@ var app = app || {};
 (function ($) {
     'use strict';
 
-    /**** to print ******/
+    var reload = _.extend({}, Backbone.Events);
 
     /**
      * La vue pour le login, logout et l'option d'effacement de tous les bookmarks
      */
-
-    var reload = _.extend({}, Backbone.Events);
-
     app.HomeView = Backbone.View.extend({
         el: '.content-home',
-
         historyTemplate: _.template($('#home-history-template').html()),
-
         bookmarksTemplate : _.template($('#home-bookmarks-template').html()),
-
         userData: $('.user-data'),
-
         username: $('#username'),
-
         userLabel: $('#user-name-label'),
-
         logoutButton: $('.logout-btn'),
-
         lastMofication: $('#last_modification'),
 
         initialize: function () {
@@ -60,10 +50,15 @@ var app = app || {};
         },
 
         hideUserForm: function () {
-
+            /**
+             * Montre les données du profil
+             */
             this.userData.css('display', 'none');
             this.logoutButton.css('display', 'block');
 
+            /**
+             * Vérifie si on a d'historique pour montrer.
+             */
             if (sessionStorage.getItem('_cache_last_modification') !== null ){
                 this.lastMofication.css('display', 'block');
                 this.lastMofication.html("Dernière modification: " +
@@ -77,10 +72,15 @@ var app = app || {};
 
         showUserForm: function () {
 
+            /**
+             * Montre le form pour l'authentication
+             */
+            $('#last_modification').css('display', 'none');
+
             this.userData.css('display', 'block');
             this.logoutButton.css('display', 'none');
             this.userLabel.html('');
-            $('#last_modification').css('display', 'none');
+
             this.userLabel.removeClass("name");
         },
 
@@ -90,7 +90,10 @@ var app = app || {};
         },
 
         render: function () {
-
+            /**
+             * Montre l'historique
+             * @type {*}
+             */
             var historySelector = $('.history');
             historySelector.empty();
 
@@ -122,6 +125,10 @@ var app = app || {};
         },
 
         logout: function () {
+            /**
+             * Supprime les données qui étaient dans le sessionStorage, et montre le form
+             * d'authentication
+             */
             $('#activity_history').addClass('hidden');
             $('#last_bookmarks').addClass('hidden');
 
@@ -132,6 +139,9 @@ var app = app || {};
         },
 
         activeSession: function () {
+            /**
+             * Vérifie si la session est active ou pas
+             */
             if (typeof (Storage) !== 'undefined') {
                 return sessionStorage.getItem('user') !== null;
             }
@@ -139,6 +149,9 @@ var app = app || {};
         },
 
         clean: function () {
+            /**
+             * Supprime toutes les données dans le storage
+             */
             localStorage.clear();
             app.ClientCollection.reset();
 
@@ -183,7 +196,6 @@ var app = app || {};
                 if (app.DEBUG) {
                     console.debug("DEBUG: Site added client side.");
                 }
-
             }
 
             $('#clientModal').modal('hide');
@@ -278,9 +290,11 @@ var app = app || {};
             this.show();
         },
         impression: function () {
-            if(app.ClientCollection.length===0) {
-                $(".content-client .message").css("display","block");
-                $(".content-client .message").html(" Vous n'avez pas de sites à imprimer");
+            if(app.ClientCollection.length === 0) {
+                var msg = $(".content-client .message");
+                msg.css("display","block");
+                msg.html(" Vous n'avez pas de sites à imprimer");
+
                 $("#pairs-client").css("display","none");
                 window.print();
             }
@@ -416,15 +430,22 @@ var app = app || {};
         removeSite: function (ev) {
             ev.preventDefault();
 
-            var title = $(ev.currentTarget).attr('data-title');
-            var url = $(ev.currentTarget).attr('data-url');
+            try {
+                var title = $(ev.currentTarget).attr('data-title');
+                var url = $(ev.currentTarget).attr('data-url');
 
-            app.ServerCollection.findWhere({title: title, url: url}).destroy();
-            app.AddEvent.trigger('server-remove', title);
+                app.ServerCollection.findWhere({title: title, url: url}).destroy();
+                app.AddEvent.trigger('server-remove', title);
 
-            if (app.DEBUG) {
-                console.debug("DEBUG: Site removed server side.");
+                if (app.DEBUG) {
+                    console.debug("DEBUG: Site removed server side.");
+                }
+            } catch (e) {
+                if (app.DEBUG) {
+                    console.debug("DEBUG: Error in remove event.");
+                }
             }
+
 
         },
 
@@ -437,7 +458,7 @@ var app = app || {};
             new ServerViewList({collection: app.ServerCollection});
         },
         impression: function () {
-            if(app.ServerCollection.length===0) {
+            if(app.ServerCollection.length === 0) {
                 var message = $(".content-server .message");
                 message.css("display","block");
                 message.html(" Vous n'avez pas de sites à imprimer");
@@ -454,8 +475,10 @@ var app = app || {};
     });
 
 
-    /*Tag view*/
-
+    /**
+     * La vue de recherche des tags selon le critère que l'utilisateur a choisi, si c'est vide, alors
+     * il montre tous les sites.
+     */
     app.ViewByTag = Backbone.View.extend({
         el: '.content-tags',
 
@@ -503,7 +526,7 @@ var app = app || {};
     });
 
     /**
-     *
+     * La liste de tags dans le select
      */
     var TagList = Backbone.View.extend({
         el: '#tag-search',
@@ -525,7 +548,7 @@ var app = app || {};
 
 
     /**
-     *
+     * Le form de recherche par tags, il declenche le pop-up pour demander le tag.
      */
     var TagForm = Backbone.View.extend({
         el: '.content-tags',

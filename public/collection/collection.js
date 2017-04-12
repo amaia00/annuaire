@@ -34,18 +34,43 @@ var app = app || {};
     });
 
     app.TagCollection = new TagCollection();
-    app.ServerCollection.bind('sync remove', function () {
-        _.each(app.ServerCollection.models, function (model) {
-            try {
+
+    /**
+     * La function mettre à jour la collection de Tags quand il y a un événement qui changes
+     * les valeurs dans la collections
+     * @type {Function}
+     */
+    var updateTagList = (function () {
+        app.TagCollection.reset();
+
+         try {
+            _.each(app.ServerCollection.models, function (model) {
                 _.forEach(model.get('tags').split(','), function (tag) {
                     app.TagCollection.add({tag: tag});
                 });
-            }catch (e){
-                //ignore
-            }
-        }, this)
+            }, this);
+
+            _.each(app.ClientCollection.models, function (model) {
+                _.forEach(model.get('tags').split(','), function (tag) {
+                    app.TagCollection.add({tag: tag});
+                });
+            }, this);
+        }catch (e){
+            //console.error("ERROR: The tag list has not been synchronized.")
+        }
     });
 
+    /**
+     * Ces événements vont appeler la function de mis à jour la collection de Tags
+     */
+
+    app.ServerCollection.bind('sync remove', function () {
+        updateTagList();
+    });
+
+    app.ClientCollection.bind('reset add remove', function () {
+        updateTagList();
+    });
 
     if (app.DEBUG) {
         console.debug("DEBUG: Collections loaded.");

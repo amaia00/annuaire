@@ -6,26 +6,39 @@ var Bookmark = require('../shared/annuaire.js');
 var less = require('less');
 var app = module.exports = express();
 
-var last_modification = new Date();
 
 /**
  * Définition de ressources statiques dans le dossier public
  */
 app.use(express.static(__dirname + path.sep + '../public'));
-app.use('/jquery',  express.static( path.join(__dirname, '../node_modules/jquery/dist')));
-app.use('/bootstrap-js',  express.static( path.join(__dirname, '../node_modules/bootstrap/dist/js')));
-app.use('/bootstrap-css',  express.static( path.join(__dirname, '../node_modules/bootstrap/dist/css')));
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+app.use('/jquery', express.static(path.join(__dirname, '../node_modules/jquery/dist')));
+app.use('/bootstrap-js', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/js')));
+app.use('/bootstrap-css', express.static(path.join(__dirname, '../node_modules/bootstrap/dist/css')));
+
+var urlencodedParser = bodyParser.urlencoded({extended: false});
+
+/**
+ * Fonction outil pour affecter la date et heure sans miliseconds.s
+ * @type {Function}
+ */
+var setLastModified = (function () {
+    var last_modification = new Date();
+    last_modification.setMilliseconds(0);
+
+    return last_modification;
+});
+
+var last_modification = setLastModified();
 
 /* Controller */
 
 
-app.get('/', function(req, res){
+app.get('/', function (req, res) {
 
     res.sendFile(path.resolve('public/index.html'));
 });
 
-app.get('/tag.js', function(req, res) {
+app.get('/tag.js', function (req, res) {
     res.sendFile(path.resolve('shared/tag.js'));
 
 });
@@ -54,18 +67,22 @@ app.get('/bookmarks/', function (req, res) {
     var all_bookmarks = Bookmark.collection;
     var collection = [];
 
-    if (new Date(req.get('If-Modified-Since')) < last_modification) {
-        res.status(304).send();
-    } else {
+    if (typeof req.get('If-Modified-Since') === 'undefined' || (new Date(req.get('If-Modified-Since'))) < last_modification) {
+
         for (var key in all_bookmarks) {
             if (all_bookmarks.hasOwnProperty(key))
-                collection.push({title: key, url: all_bookmarks[key].value,
-                    tags: all_bookmarks[key].tags.collection.join(',')});
+                collection.push({
+                    title: key, url: all_bookmarks[key].value,
+                    tags: all_bookmarks[key].tags.collection.join(',')
+                });
         }
 
         res.setHeader('Last-Modified', last_modification.toUTCString());
         res.send(JSON.stringify(collection));
+    } else {
+        res.status(304).send();
     }
+
 });
 
 /**
@@ -84,11 +101,10 @@ app.post('/bookmarks/', urlencodedParser, function (req, res) {
         });
 
         Bookmark.bind(nom, url, tag);
-
-        last_modification = new Date();
+        last_modification = setLastModified();
 
         res.status(201).send(JSON.stringify(Bookmark.get(nom)));
-    }catch (e){
+    } catch (e) {
         res.status(500).send(e.message);
     }
 });
@@ -98,7 +114,8 @@ app.post('/bookmarks/', urlencodedParser, function (req, res) {
  */
 app.delete('/bookmarks/:id', function (req, res) {
     Bookmark.remove(req.params.id);
-    last_modification = new Date();
+    last_modification = setLastModified();
     res.status(204).send();
 });
+
 
