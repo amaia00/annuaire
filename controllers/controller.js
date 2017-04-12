@@ -4,16 +4,14 @@ var bodyParser = require('body-parser');
 var Tag = require('../shared/tag.js');
 var Bookmark = require('../shared/annuaire.js');
 var less = require('less');
-
 var app = module.exports = express();
+
+var last_modification = new Date();
 
 /**
  * Définition de ressources statiques dans le dossier public
  */
 app.use(express.static(__dirname + path.sep + '../public'));
-//app.use('public/js/bootstrap.js', express.static(__dirname + '/node_modules/bootstrap/dist/js/bootstrap.js')); // redirect bootstrap JS
-/*app.use(__dirname + path.sep + '../public/js', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
-*/
 app.use('/jquery',  express.static( path.join(__dirname, '../node_modules/jquery/dist')));
 app.use('/bootstrap-js',  express.static( path.join(__dirname, '../node_modules/bootstrap/dist/js')));
 app.use('/bootstrap-css',  express.static( path.join(__dirname, '../node_modules/bootstrap/dist/css')));
@@ -41,7 +39,7 @@ app.get('/tag.js', function(req, res) {
 app.get('/bookmarks/:id', function (req, res) {
     var site = Bookmark.get(req.params.id);
 
-    if (!Object.keys(link).length) {
+    if (!Object.keys(site).length) {
         res.status(404).send();
     } else {
         res.status(200).send(JSON.stringify(site));
@@ -52,16 +50,22 @@ app.get('/bookmarks/:id', function (req, res) {
  * Retourne tous les links de l'Bookmark
  */
 app.get('/bookmarks/', function (req, res) {
+
     var all_bookmarks = Bookmark.collection;
     var collection = [];
 
-    for (var key in all_bookmarks) {
-        if (all_bookmarks.hasOwnProperty(key))
-            collection.push({title: key, url: all_bookmarks[key].value,
-                tags: all_bookmarks[key].tags.collection.join(',')});
-    }
+    if (new Date(req.get('If-Modified-Since')) < last_modification) {
+        res.status(304).send();
+    } else {
+        for (var key in all_bookmarks) {
+            if (all_bookmarks.hasOwnProperty(key))
+                collection.push({title: key, url: all_bookmarks[key].value,
+                    tags: all_bookmarks[key].tags.collection.join(',')});
+        }
 
-    res.status(200).send(JSON.stringify(collection));
+        res.setHeader('Last-Modified', last_modification.toUTCString());
+        res.send(JSON.stringify(collection));
+    }
 });
 
 /**
@@ -80,6 +84,9 @@ app.post('/bookmarks/', urlencodedParser, function (req, res) {
         });
 
         Bookmark.bind(nom, url, tag);
+
+        last_modification = new Date();
+
         res.status(201).send(JSON.stringify(Bookmark.get(nom)));
     }catch (e){
         res.status(500).send(e.message);
@@ -91,6 +98,7 @@ app.post('/bookmarks/', urlencodedParser, function (req, res) {
  */
 app.delete('/bookmarks/:id', function (req, res) {
     Bookmark.remove(req.params.id);
+    last_modification = new Date();
     res.status(204).send();
 });
 

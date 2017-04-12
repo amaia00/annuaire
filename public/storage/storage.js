@@ -7,6 +7,8 @@ var app = app || {};
 (function ($) {
     'use strict';
 
+    var MAX_HISTORY = 5;
+
     app.AddEvent = _.extend({}, Backbone.Events);
 
     
@@ -20,7 +22,7 @@ var app = app || {};
             var value_selector = $('#value-server');
             var tags_selector = $('#tags-server');
 
-            if (title_selector.val() != '') {
+            if (title_selector.val() !== '') {
                 var model = {
                     title: title_selector,
                     url: value_selector.val(),
@@ -43,7 +45,7 @@ var app = app || {};
             var value_selector = $('#value-client');
             var tags_selector = $('#tags-client');
 
-            if (title_selector.val() != '') {
+            if (title_selector.val() !== '') {
                 var model = {
                     title: title_selector.val(),
                     url: value_selector.val(),
@@ -95,7 +97,7 @@ var app = app || {};
         });
 
         app.ClientCollection.on('add', function (e) {
-            if (e.attributes.titre != '' && typeof e.attributes.title != 'undefined') {
+            if (e.attributes.titre !== '' && typeof e.attributes.title !== 'undefined') {
                 localStorage.setItem(e.attributes.title, JSON.stringify(e.attributes));
 
             }
@@ -111,13 +113,15 @@ var app = app || {};
                 var date = new Date();
                 var datestring ="<div class='date'>Le <span class='date_date'>"+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + "</span>à  <span class='heure'>"+
                     date.getHours() + ":" + date.getMinutes()+"</span>";
+
                 var datehistory = "Le "+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + " "+
                     date.getHours() + ":" + date.getMinutes()+"";
+
                 sessionStorage.setItem('_cache_last_bookmark_client', JSON.stringify(model));
                 sessionStorage.setItem('_cache_last_modification', datestring);
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
-                if (history.length == 5)
+                if (history.length === 5)
                     history.shift();
 
                 history.push({'date': datehistory, 'action': 'Nouveau bookmark ajouté côté client: ' + model.title});
@@ -137,7 +141,7 @@ var app = app || {};
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
 
-                if (history.length == 5)
+                if (history.length === MAX_HISTORY)
                     history.shift();
 
                 history.push({'date': datehistory, 'action': 'Bookmark suprimé côté client: ' + title});
@@ -157,7 +161,7 @@ var app = app || {};
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
 
-                if (history.length == 5)
+                if (history.length === MAX_HISTORY)
                     history.shift();
 
                 history.push({'date': datehistory, 'action': 'Nouveau bookmark ajouté côté serveur: ' + model.title});
@@ -171,7 +175,7 @@ var app = app || {};
             var datehistory = "Le "+ date.getDate()  + "-" + (date.getMonth()+1) + "-" + date.getFullYear() + " "+
                 date.getHours() + ":" + date.getMinutes()+"";
 
-            if (history.length == 5)
+            if (history.length === MAX_HISTORY)
                 history.shift();
 
             history.push({'date': datehistory, 'action': 'Tous les bookmarks ont été suprimés'});
@@ -190,7 +194,7 @@ var app = app || {};
 
                 var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes')) || [];
 
-                if (history.length == 5)
+                if (history.length === MAX_HISTORY)
                     history.shift();
 
                 history.push({'date': datehistory, 'action': 'Bookmark suprimé côté serveur: ' + title});

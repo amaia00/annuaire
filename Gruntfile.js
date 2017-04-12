@@ -33,8 +33,8 @@ module.exports = function(grunt) {
             tasks: ["less"]
         }
 	});
-	grunt.registerTask('less','less');
-    grunt.registerTask('build', ['less','jshint', 'express', 'express-keepalive']);
+
+	grunt.registerTask('build', ['less', 'jshint', 'express', 'express-keepalive']);
 	grunt.loadNpmTasks('grunt-express');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-less');
