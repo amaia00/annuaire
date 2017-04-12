@@ -34,7 +34,7 @@ module.exports = function(grunt) {
         }
 	});
 
-	grunt.registerTask('build', ['jshint', 'express', 'express-keepalive', 'less']);
+	grunt.registerTask('build', ['less', 'jshint', 'express', 'express-keepalive']);
 	grunt.loadNpmTasks('grunt-express');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-less');
