@@ -45,5 +45,16 @@
 Executer la commande suivante:
 
 ```
+
+npm install grunt --save-dev
+
+npm install grunt-express
+
+npm install express
+
+npm install jquery --save
+
+npm install bootstrap --save
+
 grunt build
 ```
