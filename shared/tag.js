@@ -54,7 +54,7 @@ Tag.prototype.delete = function (data) {
  * @returns {string} tous les tags
  */
 Tag.prototype.print = function () {
-  return this.collection.join(', ');
+    return this.collection.join(',');
 };
 
 /**

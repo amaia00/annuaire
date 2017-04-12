@@ -32,6 +32,11 @@ var app = app || {};
     app.Tag = Backbone.Model.extend({
         defaults: {
             tag: ''
-        }
+        },
+        idAttribute: 'tag'
     });
+
+    if (app.DEBUG) {
+        console.debug("DEBUG: Models loaded.");
+    }
 })();

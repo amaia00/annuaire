@@ -1,12 +1,155 @@
 /**
  * Created by amaia.nazabal on 2/9/17.
- * TODO: try to remake the view generics
  **/
 
 var app = app || {};
 
 (function ($) {
     'use strict';
+
+    /**** to print ******/
+
+    /**
+     * La vue pour le login, logout et l'option d'effacement de tous les bookmarks
+     */
+
+    var reload = _.extend({}, Backbone.Events);
+
+    app.HomeView = Backbone.View.extend({
+        el: '.content-home',
+
+        historyTemplate: _.template($('#home-history-template').html()),
+
+        bookmarksTemplate : _.template($('#home-bookmarks-template').html()),
+
+        userData: $('.user-data'),
+
+        username: $('#username'),
+
+        userLabel: $('#user-name-label'),
+
+        logoutButton: $('.logout-btn'),
+
+        lastMofication: $('#last_modification'),
+
+        initialize: function () {
+            this.show();
+
+            if (this.activeSession()) {
+                this.hideUserForm();
+                this.render();
+            } else {
+                this.showUserForm();
+
+            }
+        },
+
+        events: {
+            'click .login-btn': 'login',
+            'click .logout-btn': 'logout',
+            'click .clean-btn': 'clean'
+        },
+
+        hide: function () {
+            this.hideUserForm();
+            this.$el.css('display', 'none');
+        },
+
+        show: function () {
+            this.$el.css('display', 'block');
+        },
+
+        hideUserForm: function () {
+
+            this.userData.css('display', 'none');
+            this.logoutButton.css('display', 'block');
+
+            if (sessionStorage.getItem('_cache_last_modification') !== null ){
+                this.lastMofication.css('display', 'block');
+                this.lastMofication.html("Dernière modification: " +
+                    sessionStorage.getItem('_cache_last_modification'));
+            } else
+                this.lastMofication.css('display', 'none');
+
+            this.userLabel.html('Welcome ' + sessionStorage.getItem('user') + '!');
+            this.userLabel.addClass("name");
+        },
+
+        showUserForm: function () {
+
+            this.userData.css('display', 'block');
+            this.logoutButton.css('display', 'none');
+            this.userLabel.html('');
+            $('#last_modification').css('display', 'none');
+            this.userLabel.removeClass("name");
+        },
+
+        login: function () {
+            sessionStorage.setItem('user', this.username.val());
+            this.hideUserForm();
+        },
+
+        render: function () {
+
+            var historySelector = $('.history');
+            historySelector.empty();
+
+            if (sessionStorage.getItem('_cache_last_five_changes') !== null) {
+                $('#activity_history').removeClass('hidden');
+
+                var history = JSON.parse(sessionStorage.getItem('_cache_last_five_changes'));
+                historySelector.append(this.historyTemplate({history: history}));
+            }
+
+            var bookmarkSelector = $('.bookmarks');
+            bookmarkSelector.empty();
+
+            if (sessionStorage.getItem('_cache_last_bookmark_client') !== null) {
+                $('#last_bookmarks').removeClass('hidden');
+                var bookmark_client = JSON.parse(sessionStorage.getItem('_cache_last_bookmark_client')) || {};
+                bookmark_client.cote = 'Client';
+
+                bookmarkSelector.append(this.bookmarksTemplate({bookmarks: [bookmark_client]}));
+            }
+
+            if (sessionStorage.getItem('_cache_last_bookmark_server') !== null) {
+                $('#last_bookmarks').removeClass('hidden');
+                var bookmark_server = JSON.parse(sessionStorage.getItem('_cache_last_bookmark_server')) || {};
+                bookmark_server.cote = 'Serveur';
+
+                bookmarkSelector.append(this.bookmarksTemplate({bookmarks: [bookmark_server]}));
+            }
+        },
+
+        logout: function () {
+            $('#activity_history').addClass('hidden');
+            $('#last_bookmarks').addClass('hidden');
+
+            this.showUserForm();
+
+            sessionStorage.clear();
+            this.render();
+        },
+
+        activeSession: function () {
+            if (typeof (Storage) !== 'undefined') {
+                return sessionStorage.getItem('user') !== null;
+            }
+            return false;
+        },
+
+        clean: function () {
+            localStorage.clear();
+            app.ClientCollection.reset();
+
+            _.each(_.clone(app.ServerCollection.models), function (model) {
+                model.destroy();
+            }, this);
+
+            app.AddEvent.trigger('clean-all');
+            reload.trigger('reload-tag-view');
+        }
+    });
 
     /**
      * La vue pour le formulaire du côté client, pour l'ajouter dans la collection
@@ -17,19 +160,33 @@ var app = app || {};
             this.title = $('#key-client');
             this.url = $('#value-client');
             this.tags = $('#tags-client');
+
             this.render(e)
         },
 
         render: function () {
             if (this.title.val() !== '') {
-                app.ClientCollection.add({
+                _.each(this.tags.val().split(','), function (tag) {
+                    app.TagCollection.add({tag: tag});
+                }, this);
+
+                var model = {
                     title: this.title.val(),
                     url: this.url.val(),
                     tags: this.tags.val()
-                });
+                };
+
+                app.ClientCollection.add(model);
+
+                app.AddEvent.trigger('client-add', model);
+
+                if (app.DEBUG) {
+                    console.debug("DEBUG: Site added client side.");
+                }
+
             }
 
-            $('#myModal1').modal('hide');
+            $('#clientModal').modal('hide');
             this.reset();
         },
 
@@ -111,6 +268,11 @@ var app = app || {};
 
             var site = app.ClientCollection.findWhere({title: title, url: url});
             app.ClientCollection.remove(site);
+            app.AddEvent.trigger('client-remove', title);
+
+            if (app.DEBUG) {
+                console.debug("DEBUG: Site removed client side.");
+            }
 
             this.show();
         }
@@ -123,22 +285,39 @@ var app = app || {};
      */
     var FormServer = Backbone.View.extend({
         initialize: function (e) {
-            this.title = $('#key-serveur');
-            this.url = $('#value-serveur');
-            this.tags = $('#tags-serveur');
+            $("#pairs-server").css('display','block');
+            $(".message").css('display','none');
+            if (app.DEBUG) {
+                console.debug("DEBUG: Form server initialized.");
+            }
+
+            this.title = $('#key-server');
+            this.url = $('#value-server');
+            this.tags = $('#tags-server');
             this.render(e);
         },
 
         render: function () {
             if (this.title.val() !== '') {
-                app.ServerCollection.create({
+                _.each(this.tags.val().split(','), function (tag) {
+                    app.TagCollection.add({tag: tag});
+                }, this);
+
+                var model = {
                     title: this.title.val(),
                     url: this.url.val(),
                     tags: this.tags.val()
-                }, {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+                };
+                app.ServerCollection.create(model,
+                    {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+
+                app.AddEvent.trigger('server-add', model);
+                if (app.DEBUG) {
+                    console.debug("DEBUG: Site added server side.");
+                }
             }
 
-            $('#myModal').modal('hide');
+            $('#serverModal').modal('hide');
 
             this.reset();
         },
@@ -147,7 +326,6 @@ var app = app || {};
             this.title.val('');
             this.url.val('');
             this.tags.tagsinput('removeAll');
-
         }
     });
 
@@ -165,17 +343,25 @@ var app = app || {};
         tagName: 'tr',
 
         initialize: function () {
-            _.bindAll(this, "render");
-            this.listenTo(this.collection, 'all', this.render);
+            if (app.DEBUG) {
+                console.debug("DEBUG: Sites server collection initialized.");
+            }
 
+            _.bindAll(this, "render");
+            app.ServerCollection.bind('sync remove', this.render);
             app.ServerCollection.fetch();
         },
 
         render: function () {
+            if (app.DEBUG){
+                console.debug("DEBUG: Render function for sites list.");
+            }
+
             this.$el.empty();
 
-            _.each(this.collection.models, function (model) {
-                this.$el.append(this.template(model.toJSON()));
+            _.each(app.ServerCollection.models, function (model) {
+                if (typeof (model.get('tags')) !== 'object')
+                    this.$el.append(this.template(model.toJSON()));
             }, this);
         }
     });
@@ -192,10 +378,15 @@ var app = app || {};
 
         events: {
             'click .add-site': 'addSite',
-            'click .remove-site': 'removeSite'
+            'click .remove-site': 'removeSite',
+            'click  #impression_serveur': 'impression'
         },
 
         initialize: function () {
+            if (app.DEBUG) {
+                console.debug("DEBUG: Server view initialized.");
+            }
+
             this.show();
         },
 
@@ -214,6 +405,11 @@ var app = app || {};
             var url = $(ev.currentTarget).attr('data-url');
 
             app.ServerCollection.findWhere({title: title, url: url}).destroy();
+            app.AddEvent.trigger('server-remove', title);
+
+            if (app.DEBUG) {
+                console.debug("DEBUG: Site removed server side.");
+            }
 
         },
 
@@ -224,44 +420,26 @@ var app = app || {};
         show: function () {
             this.$el.css('display', 'block');
             new ServerViewList({collection: app.ServerCollection});
+        },
+        impression: function () {
+            if(app.ServerCollection.length===0) {
+                var message = $(".content-server .message");
+                message.css("display","block");
+                message.html(" Vous n'avez pas de sites à imprimer");
+                $("#pairs-server").css("display","none");
+                window.print();
+            }
+            else {
+
+                $(".content-server .message").css('display','none');
+                $("#pairs-server").css("display","block");
+                window.print();
+            }
         }
     });
 
 
-    /*Taf view*/
-
-    app.TagView = Backbone.View.extend({
-        el: '.content-tags',
-
-        template: _.template($('#tags-template').html()),
-
-        table: $('#table-body-tags'),
-
-        initialize: function () {
-            this.show();
-        },
-
-        hide: function () {
-            this.$el.css('display', 'none');
-        },
-
-        show: function () {
-            this.$el.css('display', 'block');
-            this.render();
-        },
-
-        render: function () {
-            this.table.empty();
-
-            _.each(app.ServerCollection.models, function (model) {
-                this.table.append(this.template(model.toJSON()));
-            }, this);
-
-            _.each(app.ClientCollection.models, function (model) {
-                this.table.append(this.template(model.toJSON()));
-            }, this);
-        }
-    });
+    /*Tag view*/
 
     app.ViewByTag = Backbone.View.extend({
         el: '.content-tags',
@@ -271,7 +449,13 @@ var app = app || {};
         table: $('#table-body-tags'),
 
         initialize: function (options) {
-            this.show(options.selectTag);
+            var self = this;
+            app.ServerCollection.fetch({success: function () {
+                self.show(options.selectTag)
+            }});
+
+            reload.bind('reload-tag-view', this.render, this);
+
         },
 
         hide: function () {
@@ -284,37 +468,75 @@ var app = app || {};
         },
 
         render: function (tag) {
-            this.table.empty();
 
-            _.each(app.ServerCollection.models, function (model) {
-                console.debug(model.attributes.tags);
-                if (model.get('tags').indexOf(tag) !== -1)
-                    this.table.append(this.template(model.toJSON()));
-            }, this);
+            var self = this;
+            self.table.empty();
+
+            tag = tag || '';
+
+            app.ServerCollection.each(function (model) {
+                if (model.get('tags').indexOf(tag) !== -1 && model.toJSON() !== '')
+                        self.table.append(self.template(model.toJSON()));
+            }, self);
 
             _.each(app.ClientCollection.models, function (model) {
-                console.debug(model.attributes.tags);
-                if (model.get('tags').indexOf(tag) !== -1)
-                    this.table.append(this.template(model.toJSON()));
+                if (model.get('tags').indexOf(tag) !== -1 && model.toJSON() !== '')
+                    self.table.append(self.template(model.toJSON()));
+            }, this);
+
+        }
+    });
+
+    /**
+     *
+     */
+    var TagList = Backbone.View.extend({
+        el: '#tag-search',
+
+        template: _.template($('#tags-list').html()),
+
+        initialize: function () {
+            if (app.DEBUG) {
+                console.debug("DEBUG: Tag list view initialized.");
+            }
+
+            this.$el.empty();
+            _.each(app.TagCollection.models, function (model) {
+                if (model.toJSON() !== '')
+                    this.$el.append(this.template(model.toJSON()));
             }, this);
         }
     });
 
-})(jQuery);
 
-/**
- * TODO Sofiaa
- */
-jQuery(document).ready(function () {
-    $(window).load(function () {
-        var pathname = window.location.href;
-        var expr = "client";
+    /**
+     *
+     */
+    var TagForm = Backbone.View.extend({
+        el: '.content-tags',
 
-        if (pathname.match(expr) != null) {
-            $(".content-server").css("display", "none");
-            $(".content-tags").css("display", "none");
+        template: 'tag-template',
 
+        events: {
+            'click .search-button': 'searchTag',
+            'click .search-btn': 'listTag'
+        },
+
+        searchTag: function () {
+            if (app.DEBUG) {
+                console.debug("DEBUG: Tag form initialized.");
+            }
+
+            $('#myModal2').modal('hide');
+            app.appRouter.navigate('#/tag/' + $('#tag-search').val(), {trigger: true});
+        },
+
+        listTag: function () {
+            new TagList();
         }
-
     });
-});
+
+    app.TagForm = new TagForm();
+
+
+}(jQuery));
