@@ -3,7 +3,6 @@
  **/
 
 var app = app || {};
-
 (function ($) {
     'use strict';
 
@@ -207,6 +206,10 @@ var app = app || {};
                 //console.log( this.tags.val()+"tags")
                 app.ClientCollection.add(model);
                 //console.log(app.ClientCollection);
+                /*app.ServerCollection.create(model,
+                    {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+
+                app.AddEvent.trigger('server-add', model);*/
 
                 app.AddEvent.trigger('client-add', model);
 
@@ -253,8 +256,13 @@ var app = app || {};
             _.each(this.collection.models, function (model) {
                 this.$el.append(this.template(model.toJSON()));
             }, this);
+
+            //this.render();
         }
+
+
     });
+
 
     /**
      * La vue qui recupère les événements pour ajouter ou bien supprimer
@@ -267,10 +275,12 @@ var app = app || {};
 
         events: {
             'click #form-client .add-site': 'addSite',
-            'click .remove-site': 'removeSite'
+            'click .remove-site': 'removeSite',
+            'click  #impression_client': 'impression'
         },
 
         initialize: function () {
+            this.listenTo(this.model, 'sync', this.render);
             this.show();
         },
 
@@ -280,7 +290,28 @@ var app = app || {};
 
         show: function () {
             this.$el.css('display', 'block');
-            new ClientViewList({collection: app.ClientCollection});
+
+            //console.log("ok i'll enter now !!! ");
+            //app.ClientCollection.fetch();
+            app.ServerCollection.fetch().done( function(){
+
+                if(app.ClientCollection.length==0 && app.ServerCollection.length!=0){
+                    for(var i= 0; i < app.ServerCollection.length; i++){
+                        app.ClientCollection.add(app.ServerCollection.models[i]);
+                    }
+                    //app.ClientCollection = app.ServerCollection;
+                    console.log("ok i've passed it !!! ");
+                }else{
+                    for(var i= 0; i < app.ServerCollection.length; i++){
+                        //console.log(app.ClientCollection.findWhere({title: app.ServerCollection.models[i].title, url: app.ServerCollection.models[i].url}));
+                        if(app.ClientCollection.findWhere({title: app.ServerCollection.models[i].title, url: app.ServerCollection.models[i].url})===undefined){
+                            app.ClientCollection.add(app.ServerCollection.models[i]);
+                        }
+                    }
+                }
+                new ClientViewList({collection: app.ClientCollection});
+
+            });
         },
 
         addSite: function (e) {
@@ -305,6 +336,20 @@ var app = app || {};
             }
 
             this.show();
+        },
+        impression: function () {
+            if(app.ClientCollection.length===0) {
+                $(".content-client .message").css("display","block");
+                $(".content-client .message").html(" Vous n'avez pas de sites à imprimer");
+                $("#pairs-client").css("display","none");
+                window.print();
+            }
+            else {
+
+                $(".content-client .message").css('display','none');
+                $("#pairs-client").css("display","block");
+                window.print();
+            }
         }
     });
 
@@ -342,6 +387,14 @@ var app = app || {};
                     {url: '/bookmarks/', method: 'POST', emulateJSON: true});
 
                 app.AddEvent.trigger('server-add', model);
+                app.ClientCollection.add(model);
+                //console.log(app.ClientCollection);
+                /*app.ServerCollection.create(model,
+                 {url: '/bookmarks/', method: 'POST', emulateJSON: true});
+
+                 app.AddEvent.trigger('server-add', model);*/
+
+                app.AddEvent.trigger('client-add', model);
                 if (app.DEBUG) {
                     console.debug("DEBUG: Site added server side.");
                 }
@@ -450,6 +503,7 @@ var app = app || {};
         show: function () {
             this.$el.css('display', 'block');
             new ServerViewList({collection: app.ServerCollection});
+            //app.ClientView.render;
         },
         impression: function () {
             if(app.ServerCollection.length===0) {
