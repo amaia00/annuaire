@@ -237,7 +237,8 @@ var app = app || {};
 
         events: {
             'click #form-client .add-site': 'addSite',
-            'click .remove-site': 'removeSite'
+            'click .remove-site': 'removeSite',
+            'click  #impression_client': 'impression'
         },
 
         initialize: function () {
@@ -275,6 +276,21 @@ var app = app || {};
             }
 
             this.show();
+        },
+        impression: function () {
+            if(app.ClientCollection.length===0) {
+                var message = $(".content-server .message");
+                message.css("display","block");
+                message.html(" Vous n'avez pas de sites à imprimer");
+                $("#pairs-client").css("display","none");
+                window.print();
+            }
+            else {
+
+                $(".content-client .message").css('display','none');
+                $("#pairs-client").css("display","block");
+                window.print();
+            }
         }
     });
 

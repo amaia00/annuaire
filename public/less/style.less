@@ -7,10 +7,10 @@
 @gris : #eee;
 @gris-fonce: #999;
 .borderbottom (@bordure: 5px) {
- border-bottom: @bordure;
+  border-bottom: @bordure;
 }
 .rounders (@round1: 20px, @round2:20px, @round3:20px, @round4:20px) {
- border-radius: @round1 @round2 @round3 @round4 ;
+  border-radius: @round1 @round2 @round3 @round4 ;
   -webkit-border-radius: @round1 @round2 @round3 @round4;
   -moz-border-radius: @round1 @round2 @round3 @round4;
 }
@@ -20,12 +20,12 @@
 
 
 .header {
-    text-align: center;
+  text-align: center;
 
   img {
     width: 150px;
   }
-   h2 {
+  h2 {
     text-transform: uppercase;
     font-size: 2em;
     text-shadow: 1px 1px 1px @bleu;
@@ -47,10 +47,10 @@ body #user-name-label.name {
   margin: 10px 0;
 }
 .menu {
-    background: @bleu-ciel;
-    margin: 10px 0;
-    height: 60px;
-    line-height: 59px;
+  background: @bleu-ciel;
+  margin: 10px 0;
+  height: 60px;
+  line-height: 59px;
 
 
   .nav-tabs {
@@ -129,7 +129,7 @@ body #user-name-label.name {
   margin-top:-10px;
   min-height: 470px;
 }
- .user-info {
+.user-info {
   width: auto;
   font-size: 20px;
   text-align: center;
@@ -191,7 +191,7 @@ body .table-bordered {
   background: @bleu;
   color: #fff !important;
   font-size: 1em;
-  margin: 0 auto;
+  margin: 20px auto;
   .float(none);
   display: block;
 }
@@ -206,8 +206,8 @@ body .table-bordered {
 .btn_footer {
   overflow: hidden;
   float: none;
-  width: 100%;
   text-align: center;
+  display: inline-block;
 }
 #last_modification {
   margin-top: 40px;
@@ -220,7 +220,7 @@ body .table-bordered {
   margin-bottom: 40px;
 }
 .date {
- .rounders(150px,150px,150px,150px);
+  .rounders(150px,150px,150px,150px);
   border: 1px solid @bleu;
   width: 150px;
   height: 150px;
@@ -249,7 +249,7 @@ body .table-bordered {
 .table-bordered td:nth-child(2) {
   width: 40%;
 }
-  .history a.list-group-item:nth-child(2n+1) {
+.history a.list-group-item:nth-child(2n+1) {
   background: @bleu;
   h5 ,p{
     color: @blanc;
@@ -333,7 +333,7 @@ body h5 {
     width: 70%;
   }
 
- .for_labels{
+  .for_labels{
     font-weight: 100;
     color: @bleu-ciel;
     font-size: 17px;
